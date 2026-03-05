@@ -5,6 +5,8 @@ type: software
 license: "CC-BY-4.0"
 version: "0.1.0"
 date-released: "2026-03-05"
+url: "https://github.com/kadubon/audit-closed-ai-scientist"
+repository-code: "https://github.com/kadubon/audit-closed-ai-scientist"
 authors:
   - family-names: "Takahashi"
     given-names: "K."
@@ -22,16 +24,28 @@ keywords:
   - "auditability"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.18728589"
-    description: "Audit-Closed AI Scientist Protocol (reference paper)"
+    value: "10.5281/zenodo.18870261"
+    description: "Software DOI for audit-closed-ai-scientist v0.1.0"
 preferred-citation:
-  type: article
+  type: software
   authors:
     - family-names: "Takahashi"
       given-names: "K."
       orcid: "https://orcid.org/0009-0004-4273-3365"
-  title: "Audit-Closed AI Scientist Protocol"
+  title: "audit-closed-ai-scientist"
   year: 2026
+  version: "v0.1.0"
   publisher: "Zenodo"
-  doi: "10.5281/zenodo.18728589"
-  url: "https://doi.org/10.5281/zenodo.18728589"
+  doi: "10.5281/zenodo.18870261"
+  url: "https://doi.org/10.5281/zenodo.18870261"
+references:
+  - type: article
+    authors:
+      - family-names: "Takahashi"
+        given-names: "K."
+        orcid: "https://orcid.org/0009-0004-4273-3365"
+    title: "Audit-Closed AI Scientist Protocol"
+    year: 2026
+    publisher: "Zenodo"
+    doi: "10.5281/zenodo.18728589"
+    url: "https://doi.org/10.5281/zenodo.18728589"

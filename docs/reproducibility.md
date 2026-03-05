@@ -3,7 +3,7 @@
 ## Clean-environment reproduction
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/kadubon/audit-closed-ai-scientist
 cd audit-closed-ai-scientist
 python -m pip install -r requirements.txt
 python run_all_experiments.py --profile standard

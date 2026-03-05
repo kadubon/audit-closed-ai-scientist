@@ -62,7 +62,7 @@ Integrated benchmark:
 ### Pip
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/kadubon/audit-closed-ai-scientist
 cd audit-closed-ai-scientist
 python -m pip install -r requirements.txt
 python run_all_experiments.py --profile standard
@@ -147,5 +147,10 @@ Detailed audits:
 
 ## Citation
 
-`CITATION.cff` is included for software citation metadata.
+Software (repository DOI):
+- Takahashi, K. (2026). *audit-closed-ai-scientist* (v0.1.0). Zenodo. https://doi.org/10.5281/zenodo.18870261
 
+Protocol paper:
+- Takahashi, K. (2026). *Audit-Closed AI Scientist Protocol*. Zenodo. https://doi.org/10.5281/zenodo.18728589
+
+Machine-readable metadata is in [`CITATION.cff`](CITATION.cff).
