@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/1173085548.svg)](https://doi.org/10.5281/zenodo.18870260)
 # audit-closed-ai-scientist
 
 Audit-Closed AI Scientist is a benchmark for evaluating the statistical validity of autonomous research systems.
