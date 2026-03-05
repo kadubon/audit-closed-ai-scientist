@@ -1,0 +1,43 @@
+{
+  "profile_name": "quick",
+  "alpha": 0.05,
+  "seeds": {
+    "p_hacking": 2026,
+    "candidate_shopping": 2027,
+    "optional_stopping": 2028,
+    "power_curve": 2031,
+    "adversarial_agents": 2029,
+    "sentinel_hierarchy": 2032,
+    "drift_localization": 2033,
+    "certificate_schema_validation": 2034,
+    "benchmark": 2030
+  },
+  "sample_sizes": {
+    "p_hacking_runs": 120,
+    "candidate_shopping_runs": 140,
+    "optional_null_runs": 500,
+    "optional_alt_runs": 250,
+    "power_curve_runs": 300,
+    "adversarial_runs": 220,
+    "sentinel_hierarchy_runs": 600,
+    "drift_localization_runs": 500,
+    "certificate_valid_runs": 120,
+    "certificate_invalid_runs": 300,
+    "benchmark_runs": 140
+  },
+  "grids": {
+    "hypothesis_counts": [5, 20, 50, 100, 250, 500, 1000],
+    "design_counts": [5, 10, 25, 50],
+    "max_looks_grid": [20, 50, 100, 200, 400],
+    "power_effect_sizes": [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4]
+  },
+  "settings": {
+    "candidate_alt_signal_strength": 0.35,
+    "optional_alt_mean_shift": 0.2,
+    "power_max_looks": 250,
+    "adversarial_honest_count": 10,
+    "adversarial_fabricated_fraction": 0.35,
+    "drift_subgraphs": 4,
+    "drift_alpha": 0.05
+  }
+}

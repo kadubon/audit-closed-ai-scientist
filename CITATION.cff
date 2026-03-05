@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+title: "audit-closed-ai-scientist"
+message: "If you use this benchmark, please cite the software and the protocol paper below."
+type: software
+license: "CC-BY-4.0"
+version: "0.1.0"
+date-released: "2026-03-05"
+authors:
+  - family-names: "Takahashi"
+    given-names: "K."
+    orcid: "https://orcid.org/0009-0004-4273-3365"
+keywords:
+  - "AI scientist"
+  - "autonomous research agents"
+  - "automated scientific discovery"
+  - "research automation"
+  - "self-driving laboratories"
+  - "sequential inference"
+  - "e-process"
+  - "optional stopping"
+  - "reproducible science"
+  - "auditability"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.18728589"
+    description: "Audit-Closed AI Scientist Protocol (reference paper)"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Takahashi"
+      given-names: "K."
+      orcid: "https://orcid.org/0009-0004-4273-3365"
+  title: "Audit-Closed AI Scientist Protocol"
+  year: 2026
+  publisher: "Zenodo"
+  doi: "10.5281/zenodo.18728589"
+  url: "https://doi.org/10.5281/zenodo.18728589"

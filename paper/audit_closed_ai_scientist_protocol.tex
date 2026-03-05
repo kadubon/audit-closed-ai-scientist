@@ -1,0 +1,2023 @@
+% !TEX TS-program = pdflatex
+% Compile (pdfLaTeX):
+%   pdflatex "Audit-Closed AI Scientist Protocol.tex"
+%   pdflatex "Audit-Closed AI Scientist Protocol.tex"
+
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Machine-readability / PDF text extraction ----------
+\usepackage{cmap}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\IfFileExists{glyphtounicode.tex}{\input{glyphtounicode.tex}\pdfgentounicode=1}{}
+\usepackage{microtype}
+\usepackage{setspace}
+\setstretch{1.15}
+\usepackage{float}
+
+% ---------- Math / theorem ----------
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{bbm}
+
+% ---------- Layout / utils ----------
+\usepackage[margin=0.8in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{verbatim}
+
+% ---------- Algorithms ----------
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+% ---------- Citations ----------
+\usepackage[numbers,sort&compress]{natbib}
+
+% ---------- Hyperref metadata (hyperref only; no hyperxmp) ----------
+\usepackage[
+  pdftitle={Audit-Closed AI Scientist Protocol: Trustworthy Autonomous Scientific Discovery for Self-Driving Laboratories},
+  pdfauthor={K. Takahashi},
+  pdfsubject={agentic AI scientist governance; autonomous research agents; auditable theory and measurement expansion},
+  pdfkeywords={AI Scientist, agentic AI scientist, autonomous scientific discovery, open-ended scientific discovery, autonomous research agents, self-driving laboratories, categorical semantics, e-values, optional stopping, active learning, drift localization, reproducibility},
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+]{hyperref}
+
+% ---------- Hyphenation / line breaks ----------
+\hyphenpenalty=800
+\exhyphenpenalty=800
+\sloppy
+
+% ---------- Theorem environments ----------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{remark}{Remark}[section]
+
+% ---------- Convenience macros ----------
+\newcommand{\Obs}{\mathbf{Obs}}
+\newcommand{\Stoch}{\mathbf{Stoch}}
+\newcommand{\Th}{\mathbf{Th}}
+\newcommand{\Log}{\mathsf{Log}}
+\newcommand{\Cert}{\mathsf{Cert}}
+\newcommand{\Gen}{\mathsf{Genesis}}
+\newcommand{\Acc}{\mathsf{Accept}}
+\newcommand{\Rej}{\mathsf{Reject}}
+\newcommand{\Quar}{\mathsf{Quarantine}}
+\newcommand{\Prov}{\mathsf{Provisional}}
+\newcommand{\Adopt}{\mathsf{Adopt}}
+\newcommand{\Score}{\mathsf{Score}}
+\newcommand{\Cost}{\mathsf{Cost}}
+\newcommand{\Cand}{\mathsf{Cand}}
+\newcommand{\TV}{\mathsf{TV}}
+\newcommand{\KL}{\mathsf{KL}}
+\newcommand{\MI}{\mathsf{I}}
+\newcommand{\EvScore}{\mathsf{EvScore}}
+
+\title{\textbf{Audit-Closed AI Scientist Protocol:}\\
+\Large{Trustworthy Autonomous Scientific Discovery for Self-Driving Laboratories}}
+\author{K. Takahashi\\
+\footnotesize \href{https://orcid.org/0009-0004-4273-3365}{ORCID: 0009-0004-4273-3365}}
+\date{February 22, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+AI scientist systems and self-driving laboratories require governance protocols that are statistically valid under continuous monitoring, auditable without privileged operators, and robust to physical-world failure modes.
+We present an audit-closed protocol in which every decision is a deterministic function of a public transparency log, with all semantic claims grounded in explicitly declared observable contexts.
+
+The formal core integrates typed stochastic observation interfaces, tolerance-aware predictive semantics, and non-vacuous coherence auditing on finite acyclic proof graphs.
+To resolve the deterministic-pipeline tension, we combine explicit deterministic-depth controls with a Lipschitz observation-translation theorem that converts latent Wasserstein closeness into observable total-variation guarantees.
+
+For sequential inference we use always-valid e-processes with gate-wise alpha accounting, robust score sanitization plus integrity monitoring, and anti-griefing novelty dynamics with signal-qualified eligible-cost updates.
+For adaptive experimentation we provide two regimes: a conservative fixed-ratio IPS test and a variance-adaptive predictable betting process that preserves optional-stopping validity while avoiding high-ratio evidence paralysis.
+For physical deployment we introduce hierarchical primary/secondary sentinels, spoofing-aware coherence gates, and auditable calibration transitions that separate sensor aging from sentinel degradation.
+
+For long-horizon autonomy we use drift-mode state transitions, exogenous-only root-memory decay, and subgraph-local fault localization with familywise error control.
+We prove system-level guarantees covering adaptive optional stopping, variance-adaptive evidence growth, Byzantine-resilient aggregation, legal-spam stability, drift-localization safety, and mixture re-anchoring coherence.
+A fully reproducible synthetic benchmark confirms improved availability under outliers, high-ratio contextual exploration, root-debt erosion attacks, and sentinel aging while maintaining conservative false-acceptance behavior; the released manifest includes cryptographic digests and an automatic manuscript-value consistency check.
+\end{abstract}
+
+\noindent\textbf{Keywords:} AI Scientist; agentic AI scientist; autonomous scientific discovery; open-ended scientific discovery; autonomous research agents; self-driving laboratories; e-values; optional stopping; active learning; drift localization; reproducibility.
+
+\section{Introduction}
+
+Equation discovery recovers compact governing equations from fixed observables \citep{SchmidtLipson2009,UdrescuTegmark2020,Brunton2016SINDy}.
+Scientific machine learning integrates mechanistic structure with flexible approximation \citep{Raissi2019PINN,Karniadakis2021PIML,Cuomo2022PINNReview}.
+Robot Scientists and self-driving laboratories automate closed-loop experimentation \citep{King2009Automation,Sparkes2010RobotScientists,Tom2024SDLchemrev,TobiasWahab2025SDLReview}.
+Recent agentic AI scientist systems target end-to-end automation of idea generation, experiment execution, and report writing \citep{Lu2024AIScientist,Yamada2025AIScientistV2}.
+Bayesian optimal experimental design (BOED) formalizes experiment selection \citep{Lindley1956,ChalonerVerdinelli1995,Foster2019vOED}, with amortized approaches such as iDAD \citep{Ivanova2021iDAD}.
+
+A persistent gap is \emph{epistemic governance under physical constraints}: how to justify updates without privileged adjudicators while confronting noise, outliers, high-dimensional observables, adversarial behavior, and finite lab budgets.
+This paper adopts fallibilism \citep{Popper1959,Quine1951} and treats progress as testabilization under audit constraints: new observables are valuable only when they produce replayable and sequentially valid evidence.
+
+\paragraph{Non-claims.}
+No claim is made that the protocol discovers all laws or removes the need for initial human commitments.
+All guarantees are conditional on explicit, logged Genesis commitments and stated trust assumptions.
+
+\section{Threat Model and Failure Modes}
+
+We treat the following failure modes as first-class constraints:
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+\item \textbf{F1: Optional stopping and peeking.} Continuous monitoring invalidates naive tests \citep{Johari2017Peeking,Johari2022AlwaysValid}.
+\item \textbf{F2: Many-candidate inflation.} Trying many candidates without correction yields spurious ``wins''.
+\item \textbf{F3: Candidate shopping.} Unlogged candidate search hides failures behind a winner.
+\item \textbf{F4: Data-role leakage.} Reusing evaluation data for fitting or selection invalidates evidence.
+\item \textbf{F5: Non-replayable execution.} Missing provenance or nondeterminism prevents verification \citep{Peng2011,Sandve2013}.
+\item \textbf{F6: Infrastructure privilege.} In multi-agent settings, hidden repositories or privileged submitters create structural advantage.
+\item \textbf{F7: Oracle boundary attacks.} Digitally logged data may be fabricated and not physically measured.
+\item \textbf{F8: Sybil attacks.} Adversaries may create many pseudo-agents to skew federated evidence.
+\item \textbf{F9: Outlier denial-of-service.} Rare sensor glitches can repeatedly invalidate strict score transcripts.
+\item \textbf{F10: Safety-induced paralysis.} Overly strict conjunction gates can block all useful updates.
+\item \textbf{F11: Adaptive-sampling mismatch.} Contextual experiment selection can invalidate fixed-distribution score interpretation unless logged propensity correction is built into inference.
+\item \textbf{F12: Sentinel ambiguity.} Apparent calibration drift can originate from sensor aging or sentinel aging; single-sentinel schemes cannot separate them.
+\item \textbf{F13: Root-memory erosion attack.} Repeated induced drift triggers can force debt-decay schedules to forget historical anchors unless decay is tied to exogenous physical evidence.
+\end{itemize}
+
+\section{Audit-Closed Governance, Provenance, and State Transitions}
+
+\subsection{Audit-closed update rule}
+\begin{definition}[Audit-closed update rule]
+Let $\Log_{0:t}$ be the public log prefix up to time $t$.
+An update rule is \emph{audit-closed} if there exists a deterministic function $f$ such that
+\[
+\Acc_t=f(\Log_{0:t}).
+\]
+\end{definition}
+
+\begin{definition}[Fail-closed and fail-soft containment]
+Critical verification failures (missing provenance, invalid signatures, undefined transcript steps, or budget overflows) force $\Rej$.
+Non-critical witness failures are mapped to neutral evidence contributions and audited separately; they cannot increase adoption probability.
+\end{definition}
+
+\subsection{Tamper-evident public logs}
+\begin{definition}[Transparency log]
+A transparency log is an append-only log committed by signed Merkle-tree roots.
+Verifiers obtain inclusion and consistency proofs \citep{RFC6962}.
+\end{definition}
+
+To mitigate equivocation, Genesis requires witness cosigning and gossip \citep{Chuat2015Gossip,Oxford2020CTGossip}.
+
+\subsection{Physical provenance boundary}
+\begin{definition}[Attested measurement record]
+Each measurement record includes:
+device ID, firmware digest, calibration-certificate digest, protocol digest, challenge nonce, timestamp, payload digest, and device signature.
+Challenge nonces are derived from a public randomness beacon \citep{NISTIR8213draft,NISTBeaconProject}.
+\end{definition}
+
+\begin{assumption}[Minimal physical trust base]
+At least one attested sensing path per accepted certificate is uncompromised and verifiable.
+All claims about physical evidence are conditional on this assumption.
+\end{assumption}
+
+\begin{definition}[Cross-sensor physical coherence witnesses]
+Genesis specifies a finite set of physical-consistency witnesses
+\[
+\mathcal{G}_{\mathrm{phys}}=\{g_1,\dots,g_M\},
+\]
+where each $g_m$ is a deterministic function of synchronized multi-sensor records and physically interpretable metadata (e.g., conservation constraints, instrument cross-calibration identities, monotonicity laws).
+\end{definition}
+
+\begin{definition}[Physical spoofing null]
+For each witness $g_m$, define residual $R_{m,i}$ on record $i$ and test
+\[
+H^{\mathrm{phys}}_{0,m}:\ \mathbb{E}[R_{m,i}\mid \mathcal{F}_{i-1}]\le \tau^{\mathrm{phys}}_m
+\]
+using an always-valid e-process on attested synchronized streams.
+\end{definition}
+
+\begin{remark}
+Attestation proves digital provenance, not physical honesty of the environment.
+Physical spoofing resistance is therefore enforced by explicit multi-sensor coherence tests.
+\end{remark}
+
+\begin{definition}[Hierarchical sentinel architecture]
+Genesis defines two sentinel layers:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Primary sentinels} $\mathcal{C}_{\mathrm{cal}}^{(P)}$: slow-changing references with stricter custody and replacement governance.
+\item \textbf{Secondary sentinels} $\mathcal{C}_{\mathrm{cal}}^{(S)}$: operational references that may age and are periodically recalibrated against primaries.
+\end{itemize}
+Calibration certificates must indicate which layer supported each decision.
+\end{definition}
+
+\begin{definition}[Calibration-update candidate with hierarchy checks]
+A calibration candidate proposes
+\[
+(\theta^{\mathrm{cal}}_{\mathrm{old}}\to \theta^{\mathrm{cal}}_{\mathrm{new}},\ \tau^{\mathrm{phys}}_m\to \tau^{\mathrm{phys}\,'}_m),
+\]
+and is admissible only if:
+\begin{enumerate}[leftmargin=*]
+\item primary sentinel health checks pass on fresh attested holdout runs;
+\item secondary-vs-primary consistency checks identify whether drift is sensor-side or sentinel-side;
+\item spoofing indicators remain below Genesis limits during recalibration runs; and
+\item post-update physical witnesses pass on fresh holdout data disjoint from candidate design runs.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}[Sentinel-collapse prevention rule]
+If primary health checks fail, sensor recalibration is forbidden in that epoch and the system enters a sentinel-maintenance state.
+This prevents the feedback loop ``degraded sentinel $\to$ wrong sensor recalibration $\to$ amplified inconsistency''.
+\end{proposition}
+
+\subsection{Update states and quarantine entry}
+\begin{definition}[Update states]
+A candidate update has state $\Rej$, $\Quar$, $\Prov$, or $\Adopt$.
+Quarantine permits bounded pilot execution.
+Provisional state permits bounded-scope deployment while stronger evidence is accumulated.
+\end{definition}
+
+\begin{definition}[Quarantine entry conditions]
+A candidate may enter $\Quar$ only if it passes (i) static safety prechecks (hazard class, resource caps), (ii) candidate-set commitment and generator admissibility checks, and (iii) a quarantine budget check (max pilot trials, max energy/material limits), all fixed in Genesis and verifiable from the log.
+\end{definition}
+
+\begin{remark}
+Calibration-update candidates are treated as restricted-scope candidates: they may update hardware calibration parameters and physical-gate baselines, but cannot change theory content in the same certificate.
+\end{remark}
+
+\subsection{Pilot-data non-leakage contract}
+\begin{definition}[Permitted summary algebra]
+Genesis fixes a finite set $\mathcal{S}_{\mathrm{pilot}}=\{s_1,\dots,s_M\}$ of deterministic summary functions on pilot data and a closure rule under \emph{non-adaptive} post-processing.
+The candidate generator may depend on pilot data only through $(s_1(D_{\mathrm{P}}),\dots,s_M(D_{\mathrm{P}}))$, and only for budgeting (e.g., continue/stop pilot), not for proposing new candidate content.
+\end{definition}
+
+\begin{definition}[Strict non-reuse of pilot data]
+Pilot data $D_{\mathrm{P},t}$ is never reused as conservativity/progress evidence data.
+\end{definition}
+
+\section{Typed Observable Semantics with Non-Vacuous Coherence}
+
+This section addresses four constraints simultaneously:
+(i) typed context-dependent outcome spaces,
+(ii) non-vacuous coherence control under long pipelines,
+(iii) comparability without universal pullback assumptions, and
+(iv) operational checkability from logged artifacts.
+
+\subsection{The category of stochastic maps}
+\begin{definition}[Stochastic map category $\Stoch$]
+$\Stoch$ has objects measurable spaces $(X,\Sigma_X)$ and morphisms Markov kernels $K:X\rightsquigarrow Y$.
+Composition is kernel composition; identities are Dirac kernels.
+\end{definition}
+
+\subsection{Total variation and contraction}
+\begin{definition}[Total variation]
+For measures $\mu,\nu$ on $(X,\Sigma)$,
+$\TV(\mu,\nu)=\sup_{A\in\Sigma}|\mu(A)-\nu(A)|$.
+\end{definition}
+
+\begin{definition}[Dobrushin contraction coefficient]
+For a kernel $K:X\rightsquigarrow Y$, define
+\[
+\eta(K)=\sup_{x,x'\in X}\TV\bigl(K(x,\cdot),K(x',\cdot)\bigr)\in[0,1].
+\]
+\end{definition}
+
+\begin{remark}[Deterministic-map caveat]
+For deterministic measurable maps represented as Dirac kernels, typically $\eta(K)=1$.
+Hence deterministic processing chains do not contract TV by themselves and must be controlled by explicit depth/budget constraints or by a certified metric-translation argument at the observation interface.
+\end{remark}
+
+\begin{lemma}[Kernel contraction with coefficient]
+For a Markov kernel $K:X\rightsquigarrow Y$ and measures $\mu,\nu$ on $X$,
+\[
+\TV(K_\#\mu,K_\#\nu)\le \eta(K)\TV(\mu,\nu)\le \TV(\mu,\nu).
+\]
+\end{lemma}
+
+\subsection{Predictions as a \emph{budgeted} toleranced category}
+\begin{definition}[$\mathsf{Pred}^{\TV}$]
+Objects are pairs $(X,\mu)$ with $X\in\mathrm{Ob}(\Stoch)$ and $\mu$ a probability measure on $X$.
+A morphism $(X,\mu)\to(Y,\nu)$ is a pair $(K,\epsilon)$ where $K:X\rightsquigarrow Y$ is a Markov kernel and $\epsilon\ge 0$ satisfies
+\[
+\TV(K_\#\mu,\nu)\le \epsilon.
+\]
+Composition is $(L,\epsilon')\circ(K,\epsilon)=(L\circ K,\epsilon+\epsilon')$.
+Identity is $(\mathrm{id},0)$.
+\end{definition}
+
+
+\begin{remark}[Preorder interpretation of tolerances]
+We interpret $\epsilon$ as an \emph{upper bound} on inconsistency.
+For a fixed kernel $K$, a smaller tolerance is strictly stronger.
+Accordingly, we equip each hom-set with a preorder:
+\[
+(K,\epsilon)\preceq (K,\epsilon')\quad \Longleftrightarrow\quad \epsilon\le \epsilon',
+\]
+making $\mathsf{Pred}^{\TV}$ a \emph{locally preordered} category.
+This supports \emph{lax} commutativity conditions where required.
+\end{remark}
+
+\begin{remark}
+Unlike strict element categories requiring $K_\#\mu=\nu$, $\mathsf{Pred}^{\TV}$ permits controlled incoherence.
+To prevent vacuity, Genesis must bound tolerance accumulation (Definition~\ref{def:cohbudget}).
+\end{remark}
+
+\begin{definition}[Audit expression graph and contracted coherence budgets]
+\label{def:cohbudget}
+For each certificate, Genesis specifies a finite \emph{acyclic audit expression graph} $G_t$.
+Its edges are exactly the morphisms used in audit predicates and derived quantities.
+Each edge $u$ has:
+\begin{itemize}[leftmargin=*]
+\item a tolerance budget $b(u)\in[0,\infty)$;
+\item a logged contraction upper bound $\bar\eta(u)\in[0,1]$.
+\end{itemize}
+
+For a directed path $p=(u_1,\dots,u_\ell)$ in $G_t$, define the contracted path budget
+\[
+B(p)=\sum_{j=1}^{\ell}\left(\prod_{k=j+1}^{\ell}\bar\eta(u_k)\right)b(u_j).
+\]
+Define deterministic-depth and deterministic-budget terms
+\[
+d_{\det}(p)=\sum_{j=1}^{\ell}\mathbbm{1}\{\bar\eta(u_j)=1\},
+\qquad
+B_{\det}(p)=\sum_{j:\bar\eta(u_j)=1} b(u_j).
+\]
+A theory is coherence-admissible in epoch $t$ if
+\[
+\max_{p\in\mathrm{Path}(G_t)}B(p)\le \epsilon_{\mathrm{coh}}<1,
+\]
+and, for Genesis constants $L_{\det}$ and $\epsilon_{\det}<1$,
+\[
+\max_{p\in\mathrm{Path}(G_t)}d_{\det}(p)\le L_{\det},
+\qquad
+\max_{p\in\mathrm{Path}(G_t)}B_{\det}(p)\le \epsilon_{\det}.
+\]
+\end{definition}
+
+\begin{proposition}[Non-vacuity of certified coherence bounds]
+If Definition~\ref{def:cohbudget} holds, then every audit-derived inconsistency bound in the certificate is strictly below $1$ and therefore non-vacuous.
+\end{proposition}
+\begin{proof}[Proof sketch]
+Apply the contraction lemma along each path in $G_t$.
+For $\bar\eta<1$ segments, contraction-weighted accumulation controls growth.
+For $\bar\eta=1$ segments, deterministic-depth and deterministic-budget constraints prevent vacuous additive blow-up.
+Acyclicity prevents repeated-cycle blow-up.
+\end{proof}
+
+\begin{corollary}[Deterministic-chain regime]
+If all edges on a path satisfy $\bar\eta=1$, then $B(p)=B_{\det}(p)$.
+Hence non-vacuity is guaranteed either through explicit deterministic-depth/deterministic-budget constraints or through a certified metric-translation route at the observation interface (Theorem~\ref{thm:tv-w1}).
+\end{corollary}
+
+\begin{definition}[Audited bottleneck edge]
+An edge $u_b$ in $G_t$ is an \emph{audited bottleneck} if:
+\begin{enumerate}[leftmargin=*]
+\item $\bar\eta(u_b)\le \eta_b<1$ is certified;
+\item $u_b$ maps to a lower-complexity context (e.g., sufficient statistic or conservation-law summary) with explicit replay code; and
+\item either (a) an induced stochastic contraction contract establishing $\eta_b<1$, or (b) a downstream Lipschitz-smoothed observation translation certificate (Theorem~\ref{thm:tv-w1}) is logged.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Topological budget compression via information bottlenecks]
+\label{thm:bottleneck}
+Let a path decompose as $p=p_{\mathrm{pre}}\cdot u_b\cdot p_{\mathrm{post}}$, where $u_b$ is an audited bottleneck with coefficient $\eta_b<1$.
+Define
+\[
+B_{\mathrm{pre}}=\sum_{u\in p_{\mathrm{pre}}}b(u),
+\qquad
+B_{\mathrm{post}}=\sum_{u\in p_{\mathrm{post}}}b(u).
+\]
+Then the certified path budget satisfies
+\[
+B(p)\le B_{\mathrm{pre}}+b(u_b)+\eta_b\,B_{\mathrm{post}}.
+\]
+For an otherwise identical path with no contracting bottleneck ($\eta_b=1$), the bound is
+\[
+B_{\mathrm{det}}(p)=B_{\mathrm{pre}}+b(u_b)+B_{\mathrm{post}}.
+\]
+Hence the bottleneck contracts all downstream tolerance contribution by factor $\eta_b$, enabling deeper non-vacuous audit paths.
+\end{theorem}
+\begin{proof}
+Apply Definition~\ref{def:cohbudget}.
+All terms upstream of $u_b$ are unaffected.
+Every downstream edge budget is multiplied by at least one factor $\bar\eta(u_b)\le\eta_b$, giving the stated upper bound.
+Setting $\eta_b=1$ recovers the deterministic-chain expression.
+\end{proof}
+
+\begin{definition}[Lipschitz-smoothed observation interface]
+Let $(Z,d_Z)$ be a latent metric space and let $K_{\mathrm{obs}}:Z\rightsquigarrow Y$ be the final observation kernel.
+The interface is \emph{Lipschitz-smoothed} with constant $L_{\mathrm{obs}}$ if for all probability measures $\mu,\nu$ on $Z$,
+\[
+\TV\!\left((K_{\mathrm{obs}})_\#\mu,(K_{\mathrm{obs}})_\#\nu\right)\le L_{\mathrm{obs}}\,W_1(\mu,\nu),
+\]
+where $W_1$ is the 1-Wasserstein distance on $(Z,d_Z)$ \citep[see][for foundations]{Villani2009OT}.
+\end{definition}
+
+\begin{theorem}[TV--Wasserstein translation for deterministic scientific maps]
+\label{thm:tv-w1}
+Let $f:X\to Z$ be deterministic and $L_f$-Lipschitz from $(X,d_X)$ to $(Z,d_Z)$.
+Suppose the final observation interface on $Z$ is Lipschitz-smoothed with constant $L_{\mathrm{obs}}$.
+For two candidate predictive input laws $\mu_1,\mu_2$ on $X$, define observable laws
+\[
+P_k=(K_{\mathrm{obs}})_\#(f_\#\mu_k),\qquad k\in\{1,2\}.
+\]
+Then
+\[
+\TV(P_1,P_2)\le L_{\mathrm{obs}}\,W_1(f_\#\mu_1,f_\#\mu_2)\le L_{\mathrm{obs}}L_f\,W_1(\mu_1,\mu_2).
+\]
+Consequently, deterministic abstraction chains can remain coherence-admissible without injected artificial noise when a certified Wasserstein-to-TV translation bound is logged at the observation interface.
+\end{theorem}
+\begin{proof}
+Apply the Lipschitz-smoothed interface definition to $f_\#\mu_1,f_\#\mu_2$, then use standard Lipschitz pushforward contraction:
+$W_1(f_\#\mu_1,f_\#\mu_2)\le L_f W_1(\mu_1,\mu_2)$ \citep[Ch.~6]{Villani2009OT}.
+\end{proof}
+
+
+\subsection{Observation interfaces and explicit refinement witnesses}
+\begin{definition}[Observation interface]
+An observation interface is a pair $(\Obs,\mathcal{Y})$ where $\Obs$ is a category of measurement contexts and $\mathcal{Y}:\Obs\to\Stoch$ assigns each context its outcome space and each context morphism a \emph{declared post-processing kernel}.
+Crucially, $\Obs$ is a \emph{reduction category}: primitive morphisms are exactly logged post-processing maps.
+Refinement claims are represented by explicit joint-context witnesses, not by primitive coarse$\to$fine arrows.
+\end{definition}
+
+\begin{definition}[Joint-context witness]
+A refinement/comparability witness between contexts $o,o'$ is a logged tuple $(m,a,b)$ with span
+$o \xleftarrow{a} m \xrightarrow{b} o'$ in $\Obs$.
+The tuple includes executable acquisition and post-processing specifications.
+\end{definition}
+
+\begin{remark}
+This makes ``fine vs coarse'' claims checkable without assuming pullbacks exist in a broad ambient category.
+Only explicitly logged witnesses may be used in audit predicates.
+\end{remark}
+
+\begin{definition}[Witness library]
+For each epoch, Genesis fixes a finite witness library $\mathcal{W}_t$ of allowed tuples $(m,a,b)$ and associated check procedures.
+Chaining of comparability claims is permitted only when an explicit chained witness is itself in $\mathcal{W}_t$.
+\end{definition}
+
+\begin{remark}
+This avoids assuming universal composability of spans.
+If a needed joint witness is not present in $\mathcal{W}_t$, the corresponding comparative predicate is undefined and therefore fail-closed.
+\end{remark}
+\begin{definition}[Theory comparison along a span]
+Given a witness $(m,a,b)$ and a theory $T$, predicted distributions on $o$ and $o'$ are obtained by pushing forward $\mu_T(m)$ along $\mathcal{Y}(a)$ and $\mathcal{Y}(b)$ within logged tolerances.
+Comparability is therefore an explicit auditable claim tied to concrete measurement design.
+\end{definition}
+
+\subsection{Theories and theory morphisms}
+\begin{definition}[Theory]
+Given $(\Obs,\mathcal{Y})$, a theory is a functor $P_T:\Obs\to \mathsf{Pred}^{\TV}$ such that for every $u:o\to o'$, the kernel component of $P_T(u)$ equals $\mathcal{Y}(u)$.
+Thus $P_T(o)=(\mathcal{Y}(o),\mu_T(o))$ and $P_T(u)=(\mathcal{Y}(u),\epsilon_T(u))$ with
+$\TV(\mathcal{Y}(u)_\#\mu_T(o),\mu_T(o'))\le \epsilon_T(u)$.
+\end{definition}
+
+\begin{definition}[Lax theory category $\Th_{\mathrm{lax}}(\Obs)$]
+Objects are theories.
+Morphisms are \emph{lax} natural transformations in the local preorder of $\mathsf{Pred}^{\TV}$.
+\end{definition}
+
+\begin{proposition}[Sufficient condition for a theory morphism]
+Let $T,T'$ be theories. Suppose there exists a family of tolerances $\delta_o\ge 0$ such that:
+\begin{enumerate}[leftmargin=*]
+\item (\emph{componentwise feasibility}) for every context $o$,
+\[
+\TV\big(\mu_T(o),\mu_{T'}(o)\big)\le \delta_o,
+\]
+so that $\eta_o=(\mathrm{id}_{\mathcal{Y}(o)},\delta_o)$ is a morphism in $\mathsf{Pred}^{\TV}$; and
+\item (\emph{lax naturality}) for each context morphism $u:o\to o'$,
+\[
+\delta_o+\epsilon_{T'}(u)\le \epsilon_T(u)+\delta_{o'}.
+\]
+\end{enumerate}
+Then the components $\eta_o=(\mathrm{id}_{\mathcal{Y}(o)},\delta_o)$ define a lax natural transformation $\eta:P_T\Rightarrow P_{T'}$ in $\Th_{\mathrm{lax}}(\Obs)$.
+\end{proposition}
+\begin{proof}[Proof sketch]
+Condition (1) ensures each component $\eta_o$ is a well-typed morphism in $\mathsf{Pred}^{\TV}$.
+Condition (2) is exactly the preorder (lax) commutativity requirement
+$P_{T'}(u)\circ \eta_o \preceq \eta_{o'}\circ P_T(u)$
+under the additive composition rule for tolerances, with kernel components fixed to $\mathcal{Y}(u)$.
+\end{proof}
+
+\begin{remark}
+Genesis can enforce this dominance condition when theory morphisms are required (e.g., abstraction layers).
+\end{remark}
+
+\subsection{Restriction/expansion and typed audit predicates}
+\begin{definition}[Observation expansion]
+An expansion is a full and faithful functor $i:\Obs_0\hookrightarrow\Obs_1$ such that $\mathcal{Y}_1\circ i=\mathcal{Y}_0$.
+Restriction of theories is $i^*(P_T)=P_T\circ i$.
+\end{definition}
+
+\begin{definition}[Typed audit predicates]
+An audit predicate $\varphi$ is \emph{typed} by the signature it may reference:
+\begin{itemize}[leftmargin=*]
+\item \emph{Local} predicates $\varphi:\Sigma\to\{\mathrm{true,false}\}$ reference only contexts in a single interface $(\Obs,\mathcal{Y})$.
+\item \emph{Comparative} predicates reference two interfaces linked by a specific expansion $i$ (e.g., novelty comparing $\Obs_0$ and $\Obs_1$).
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Reduct for local predicates]
+For an expansion $i:\Obs_0\hookrightarrow\Obs_1$ and a \emph{local} predicate $\varphi$ typed over $\Obs_0$, define $i^{-1}(\varphi)=\varphi$.
+For local predicates typed over $\Obs_1$, define $i^{-1}(\varphi)$ by restricting the log inputs of $\varphi$ to records mentioning only $i(\Obs_0)$-contexts.
+Reduct is \emph{not defined} for comparative predicates.
+\end{definition}
+
+\begin{definition}[Audit satisfaction condition (local predicates only)]
+For every expansion $i$ and every \emph{local} predicate $\varphi$ typed over $\Obs_0$,
+\[
+T_1\models_{\Log}\varphi \quad \Longleftrightarrow\quad i^*(T_1)\models_{\Log} i^{-1}(\varphi).
+\]
+\end{definition}
+
+\begin{remark}
+This avoids an ill-typed application of institution satisfaction to mixed predicates while retaining the intended ``restriction commutes with checking'' for local properties \citep{GoguenBurstall1992}.
+\end{remark}
+
+\section{Acceptance Criteria}
+
+\subsection{Data-role partitions}
+\begin{definition}[Pooled evaluation stream and role scheduler]
+At epoch $t$, experiments produce an attested pooled stream $D_{\mathrm{eval},t}$.
+Genesis fixes a deterministic role scheduler
+\[
+\rho_t:D_{\mathrm{eval},t}\to\{\mathrm{fit},A,H,P,G\}\times\{1,\dots,K\},
+\]
+committed before outcomes are observed.
+Role partitions may be disjoint or cross-fitted; either way the assignment is replayable from the log.
+\end{definition}
+
+\begin{remark}
+This supports data economy under lab constraints.
+Validity relies on role assignment being predictable from committed randomness and not outcome-adaptive.
+\end{remark}
+
+\begin{definition}[Logged adaptive context policy]
+For each evaluation trial $i$, the controller may choose context $X_i$ adaptively from a logged policy
+\[
+\pi_i(\cdot\mid\mathcal{F}_{i-1}),
+\]
+provided the policy (or its committed seed/state) is logged \emph{before} observing the current outcome.
+Genesis enforces positivity and bounded-ratio contracts:
+\[
+\pi_i(x\mid\mathcal{F}_{i-1})\ge \pi_{\min}>0,\qquad
+\frac{\mathcal{Q}_P(x)}{\pi_i(x\mid\mathcal{F}_{i-1})}\le c_w<\infty
+\]
+for all contexts in the support of the progress reference $\mathcal{Q}_P$.
+The realized ratio
+\[
+w_i=\frac{\mathcal{Q}_P(X_i)}{\pi_i(X_i\mid\mathcal{F}_{i-1})}
+\]
+is logged before observing trial-$i$ outcomes and may be used in predictable betting rules.
+\end{definition}
+
+\subsection{Committed and admissible candidate generation}
+\begin{definition}[Committed candidate set]
+At epoch $t$, the protocol appends a commitment $\Cand_t$ defining a finite candidate set, together with generator digests, seeds/commitments, and allowed inputs.
+\end{definition}
+
+\begin{assumption}[Generator admissibility]
+The generator may access only $\Log_{0:t-1}$ and fit-role data.
+It must not access current-epoch evaluation-role outcomes except through Genesis-permitted pilot summaries that do not affect candidate content.
+\end{assumption}
+
+\subsection{Anchored conservativity as ``not-worse-than''}
+The conservativity gate is distinct from novelty: it prevents regress on established anchors.
+
+\begin{definition}[Anchor generator]
+Genesis fixes a distribution $\mathcal{Q}_A$ over a fixed set of anchor contexts and their sampling procedures.
+At epoch $t$, anchor-role records are those with role tag $(A,\cdot)$ under $\rho_t$.
+\end{definition}
+
+\begin{definition}[Conservativity null]
+For candidate $j$ at epoch $t$, let
+\[
+\Delta_{A,t}^{(j)}=\mathcal{S}(T_j';Y)-\mathcal{S}(T;Y),
+\]
+where higher is better.
+For tolerance $\varepsilon_{t,j}\ge 0$, the conservativity requirement is
+\[
+\mathbb{E}_{\mathcal{Q}_A}[\Delta_{A,t}^{(j)}]\ge -\varepsilon_{t,j}.
+\]
+The bad-event null is
+\[
+H^{\mathrm{cons}}_{0,t,j}:\ \mathbb{E}_{\mathcal{Q}_A}[\Delta_{A,t}^{(j)}]\le -\varepsilon_{t,j}.
+\]
+\end{definition}
+
+\begin{theorem}[Global conservativity guarantee over epochs and candidates]
+\label{thm:conserv}
+Suppose candidate $j$ at epoch $t$ can pass conservativity only if an e-process rejects
+$H^{\mathrm{cons}}_{0,t,j}$ at level $\alpha^{\mathrm{cons}}_{t,j}$.
+If
+\[
+\sum_t\sum_{j\in\Cand_t}\alpha^{\mathrm{cons}}_{t,j}\le \alpha_{\mathrm{cons}},
+\]
+then with probability at least $1-\alpha_{\mathrm{cons}}$, no accepted candidate violates conservativity at acceptance time.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Apply Ville's inequality candidate-wise and union bound over all $(t,j)$.
+\end{proof}
+
+\subsection{Novelty gate without circularity}
+\begin{definition}[Quarantined pilot execution]
+Given a proposed expansion $i:\Obs_0\hookrightarrow\Obs_1$, the protocol may execute a bounded pilot budget in contexts in $\Obs_1\setminus i(\Obs_0)$ while the candidate is in $\Quar$.
+Pilot-role records are logged and used only for novelty estimation, safety checks, and garbling certificates.
+\end{definition}
+\begin{remark}
+When feasible, pilot design includes a joint-context witness $(m,a,b)$ yielding both old and new outcome views.
+This ties novelty estimation to explicit comparability evidence.
+\end{remark}
+
+\begin{definition}[Resource-normalized novelty increment]
+Let $N_i$ be bounded novelty gain and $C_i$ bounded incremental cost.
+Define utility increment
+\[
+U_i=N_i-\nu_t C_i,
+\]
+where $\nu_t\ge0$ is a deterministic dual variable updated by
+\[
+\nu_{t+1}=\Pi_{[0,\nu_{\max}]}\!\left(\nu_t+\eta_\nu\big(\mathrm{clip}(\bar C_t^{\mathrm{elig}},c_{\min},c_{\max})-B_t\big)\right).
+\]
+Here $\bar C_t^{\mathrm{elig}}$ is the mean cost over \emph{eligible} candidates only, $B_t$ is the budget target, and $\Pi_{[0,\nu_{\max}]}$ is projection to a fixed interval.
+\end{definition}
+
+\begin{definition}[Eligible-cost accounting and anti-griefing slashing]
+Genesis defines a pre-utility quality predicate $Q_{t,j}$ requiring:
+\begin{enumerate}[leftmargin=*]
+\item safety/provenance/conservativity admissibility; and
+\item signal qualification $S_{t,j}\ge \tau_{\mathrm{signal}}$, where $S_{t,j}$ is a Genesis-fixed non-circular signal statistic (e.g., provisional log-e slope or pilot predictive gain) computed from data not reused by final acceptance gates.
+\end{enumerate}
+Only candidates with $Q_{t,j}=1$ contribute to $\bar C_t^{\mathrm{elig}}$.
+Candidates with $Q_{t,j}=0$ are excluded from dual updates and may incur stake slashing; their cost cannot raise $\nu_t$.
+\end{definition}
+
+\begin{remark}
+This blocks ``legal spam'' in which formally safe but information-free expensive proposals are injected to inflate $\nu_t$ and suppress honest novelty.
+\end{remark}
+
+\begin{definition}[Novelty utility null]
+For candidate $j$ in epoch $t$, test
+\[
+H^{\mathrm{nov}}_{0,t,j}:\ \mathbb{E}[U_i\mid\mathcal{F}_{i-1}]\le0
+\]
+with an always-valid e-process at level $\alpha^{\mathrm{nov}}_{t,j}$.
+\end{definition}
+
+\begin{theorem}[Self-stabilizing novelty utility under legal-spam pressure]
+\label{thm:novelty-stable}
+Assume:
+\begin{enumerate}[leftmargin=*]
+\item dual updates use projected dynamics with $\nu_t\in[0,\nu_{\max}]$;
+\item legal-spam proposals fail signal qualification with probability at least $1-\xi$ and are excluded from eligible cost;
+\item slashing/penalty mass is nonnegative for $Q_{t,j}=0$ proposals; and
+\item honest high-signal proposals arrive with probability at least $p_h>0$ per epoch.
+\end{enumerate}
+Then $(\nu_t)$ is bounded and admits a nonempty invariant interval $I\subseteq[0,\nu_{\max}]$.
+Moreover, there exists $p_\star>0$ such that any honest proposal with margin condition
+\[
+N_i-\bar\nu C_i \ge \delta>0\quad\text{for all }\bar\nu\in I
+\]
+is accepted with probability at least $p_\star$.
+Hence legal-spam injections cannot drive the system to asymptotic paralysis by exploding $\nu_t$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Excluded/slashed low-signal proposals do not contribute positive drift to eligible cost.
+Projected updates plus bounded clipped costs yield bounded increments, so $(\nu_t)$ remains in a compact interval.
+Within that interval, honest proposals with positive utility margin retain strictly positive passing probability under always-valid novelty tests.
+\end{proof}
+
+\subsection{Goodhart/Campbell robustness via multi-metric gates}
+Novelty metrics can be gamed \citep{Goodhart1975,Campbell1976}.
+Multi-metric gates are useful, but their error accounting must be correct.
+
+\begin{proposition}[Correct bounds for ``must pass all'' gates]
+Let $A_k$ be the event that a null candidate passes witness test $k$, and suppose $\mathbb{P}(A_k)\le \alpha_k$ for each $k$.
+If adoption requires passing \emph{all} $K$ tests, then without dependence assumptions,
+$\mathbb{P}(\cap_{k=1}^K A_k)\le \min_k \alpha_k$.
+If pass events are independent under the null, then
+$\mathbb{P}(\cap_{k=1}^K A_k)\le \prod_{k=1}^K \alpha_k$.
+\end{proposition}
+
+\subsection{Two-tier acceptance and paralysis control}
+\begin{definition}[Tiered decision rule]
+For each candidate, define:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Critical gates}: safety, provenance integrity, conservativity.
+\item \textbf{Value gates}: progress and novelty.
+\end{itemize}
+If critical gates pass and value evidence is promising but incomplete, the candidate enters $\Prov$ with bounded deployment scope and horizon $H_{\Prov}$.
+Full adoption requires value-gate confirmation before horizon expiry; otherwise rollback to the incumbent.
+\end{definition}
+
+\begin{proposition}[Paralysis-risk bound under power floor]
+Assume each provisional cycle has probability at least $p_\star>0$ of reaching full adoption (implied by effect-size margins and minimum sample allocations).
+Then after $M$ independent cycles, the probability of no full adoption is at most $(1-p_\star)^M$.
+\end{proposition}
+
+
+\section{Incorporation Certificates and the Audit-Closed Protocol}
+
+The log is not only a record of outcomes; it is the \emph{sole} adjudicator. To make this operational, we require each adopted update to be accompanied by an \emph{Incorporation Certificate} that enables deterministic replay and third-party verification.
+
+\begin{definition}[Incorporation Certificate]
+An Incorporation Certificate $\Cert$ is a structured record appended to the transparency log that contains at least:
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Genesis anchors:} digests of $\Gen^{(0)}$, $\Gen^{(1)}$, and hardware-trust profile $\Gen^{(\mathrm{HW})}$, including scoring rules, alpha budgets, role-scheduler policy, adaptive-context policy constraints $(\pi_{\min},c_w)$, admissibility rules, and permitted pilot summaries.
+\item \textbf{Candidate commitment:} the committed candidate-set identifier $\Cand_t$, the selected candidate ID, and all generator digests and seeds/commitments.
+\item \textbf{Interface change:} any expansion $i:\Obs_0\hookrightarrow\Obs_1$, declared post-processing morphisms, and explicit joint-context witnesses used for comparability.
+\item \textbf{Coherence graph:} finite acyclic audit-expression graph $G_t$, per-edge budgets $b(\cdot)$, contraction bounds $\bar\eta(\cdot)$, deterministic-depth cap $L_{\det}$, and deterministic budget cap $\epsilon_{\det}$.
+\item \textbf{Provenance attestation:} device IDs, firmware/calibration digests, challenge nonces, signatures, and verification outcomes.
+\item \textbf{Data digests:} digest of pooled stream $D_{\mathrm{eval},t}$, role-scheduler commitment, and role-partition digests ($D_{\mathrm{fit}},D_{\mathrm{A},t},D_{\mathrm{H},t},D_{\mathrm{P},t},D_{\mathrm{G},t}$ as applicable).
+\item \textbf{Gate transcripts:} deterministic transcripts for each gate (safety, integrity, physical coherence, coherence, conservativity, novelty, garbling, progress), including e-process definitions, observed increments, logged propensities for adaptive sampling, stopping times, resulting e-values, anti-griefing novelty-accounting traces, and calibration-update evidence when used.
+\item \textbf{Decision:} the audit-closed decision $\Rej/\Quar/\Prov/\Adopt$ and the deterministic rule outputs that produced it.
+\item \textbf{Reproducibility contract:} determinism tier, dependency digests, and replay instructions.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+The certificate is not a proof of truth; it is proof that acceptance followed Genesis and can be rechecked from the public log alone.
+\end{remark}
+
+\begin{algorithm}[H]
+\caption{Audit-Closed Epistemic Incorporation (tiered)}
+\begin{algorithmic}[1]
+\State \textbf{Input:} log prefix $\Log_{0:t-1}$, fixed Genesis modules $\Gen^{(0)},\Gen^{(1)},\Gen^{(\mathrm{HW})}$
+\State Commit candidate set $\Cand_t \gets G(\Log_{0:t-1}, D_{\mathrm{fit}})$ before consuming epoch-$t$ evaluation outcomes
+\State Build role-assigned streams from pooled $D_{\mathrm{eval},t}$ using committed scheduler $\rho_t$
+\For{each candidate $c\in\Cand_t$}
+  \State Verify attestation/provenance, static safety, and admissibility checks (fail-closed)
+  \If{$c$ proposes an expansion $i$}
+    \State Enter quarantine only if quarantine entry conditions pass
+    \State Collect pilot data $D_{\mathrm{P},t}$ under strict non-leakage contract
+    \State Collect paired holdout $D_{\mathrm{G},t}$ if needed for garbling certificates
+  \EndIf
+  \State Check contracted coherence budgets on audit graph $G_t$ (Definition~\ref{def:cohbudget})
+  \State Run integrity and physical-coherence gates on synchronized role streams
+  \State Run conservativity and progress gates on their role streams
+  \If{$c$ proposes an expansion $i$}
+    \State Run novelty gate on $D_{\mathrm{P},t}$ and optional garbling gate on $D_{\mathrm{G},t}$
+  \EndIf
+  \State Apply tiered decision rule: $\Rej/\Quar/\Prov/\Adopt$
+  \State Emit Incorporation Certificate $\Cert$
+  \State Append $\Cert$ and decision to the transparency log
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{E-processes, e-values, and Multiple Testing}
+
+\subsection{Sanitized bounded scoring and outlier resilience}
+\begin{definition}[Measurement sanitizer]
+Let raw device output be $R_i$.
+Genesis fixes a deterministic sanitizer
+\[
+\psi:R\to \mathcal{Y}_{\mathrm{clean}}\cup\{\bot\},
+\]
+where $\bot$ denotes anomaly/unusable record.
+Scientific scores are computed on $\psi(R_i)$ and bounded by construction.
+\end{definition}
+
+\begin{definition}[Anomaly indicator channel]
+Define $A_i=\mathbbm{1}\{\psi(R_i)=\bot\}$.
+Main scientific gates use sanitized outcomes; anomaly rates are tested by a separate integrity gate.
+\end{definition}
+
+\begin{remark}
+This avoids epoch-wide denial-of-service from isolated outliers.
+Outlier pressure is tracked as explicit evidence rather than forcing automatic transcript discard.
+\end{remark}
+
+\subsection{Bounded proper scoring rules}
+Genesis uses bounded proper rules directly (no post-hoc clipping).
+
+\begin{definition}[Two bounded proper scoring rules]
+\begin{itemize}[leftmargin=*]
+\item \textbf{Brier score (binary outcome).} For $y\in\{0,1\}$ and predicted probability $p$, $\mathcal{S}_{\mathrm{Brier}}(p;y)=-(p-y)^2\in[-1,0]$.
+\item \textbf{Log score on a finite partition.} Fix a measurable partition of outcomes into $B$ bins; predictions are categorical probabilities with a fixed probability floor $p_{\min}>0$ enforced by smoothing (e.g., Dirichlet prior), so $\log p \in[\log p_{\min},0]$.
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+The partition and smoothing rule are part of the observation interface and therefore auditable.
+\end{remark}
+
+\begin{definition}[Multi-resolution partition ladder]
+For continuous outcomes, Genesis may fix a nested family of finite partitions $(\Pi_r)_{r=0}^R$ (e.g., dyadic bins) together with fixed weights $(w_r)_{r=0}^R$ and a smoothing rule (probability floor) per resolution.
+Define the \emph{ladder score} as the weighted sum of discrete log scores on each partition:
+\[
+\mathcal{S}_{\mathrm{ladder}}(q;y)=\sum_{r=0}^R w_r \log q_{\Pi_r}(\Pi_r(y)),
+\]
+where $q_{\Pi_r}$ denotes the induced categorical distribution on cells of $\Pi_r$ after smoothing.
+\end{definition}
+
+\begin{remark}
+The ladder score provides multi-scale sensitivity while preserving bounded increments.
+Changing ladder resolution is treated as a Genesis-level update.
+\end{remark}
+
+\begin{theorem}[Sample-efficient ladder discrepancy bound]
+\label{thm:ladder}
+Let $(\Pi_r)_{r=0}^{R}$ be the fixed ladder with weights $w_r\ge0$, $\sum_r w_r=1$, and per-level sample counts $N_r$ (with $\sum_r N_r=N$).
+Assume bounded per-level score increments and fixed probability floors.
+Then for any $\delta\in(0,1)$, with probability at least $1-\delta$, the ladder discrepancy estimation error is bounded by
+\[
+\sum_{r=0}^{R} w_r\,c_r\sqrt{\frac{|\Pi_r|+\log((R+1)/\delta)}{N_r}},
+\]
+for constants $c_r$ determined by boundedness contracts.
+Consequently, for balanced allocations $N_r\asymp N$, the rate is
+\[
+O\!\left(\sqrt{\frac{1}{N}\sum_{r=0}^{R}w_r|\Pi_r|}\right),
+\]
+and the induced squared-error complexity scales as
+\[
+O\!\left(\frac{1}{N}\sum_{r=0}^{R}w_r|\Pi_r|\right),
+\]
+which is typically far smaller than single-resolution fine-mesh complexity $O(|\Pi_R|/N)$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Apply level-wise concentration for bounded increments and union bound across resolutions.
+The weighted sum structure yields additive complexity in effective bin counts rather than worst-case dependence on the finest partition alone.
+\end{proof}
+
+
+\subsection{Explicit mixture e-process for bounded mean tests}
+We test composite nulls of the form $H_0:\mathbb{E}[\Delta]\le \tau$ using bounded increments.
+
+\begin{definition}[Normalized increment]
+Let $\Delta_i$ be bounded in $[a,b]$ (known by Genesis).
+Assume $\tau\in[a,b]$.
+Define $X_i=(\Delta_i-\tau)/(b-a)$ so that $X_i\in[-1,1]$.
+\end{definition}
+\begin{remark}[Boundedness contract]
+The bounds $[a,b]$ are enforced at the sanitized-score level.
+Raw anomalies are routed to the integrity channel rather than silently clipped or causing implicit success.
+\end{remark}
+
+\begin{definition}[Grid-mixture betting e-process]
+Fix a grid $\Lambda=\{\lambda_1,\dots,\lambda_m\}\subset(0,1)$ and fixed weights $\pi_j>0$ with $\sum_j\pi_j=1$ (both fixed in Genesis).
+Define
+\[
+E_n^{(\lambda)}=\prod_{i=1}^n (1+\lambda X_i),
+\qquad
+E_n=\sum_{j=1}^m \pi_j E_n^{(\lambda_j)}.
+\]
+\end{definition}
+
+\begin{proposition}[Supermartingale property (with tower rule explicit)]
+Assume $(X_i)$ is adapted to $(\mathcal{F}_i)$ and satisfies $\mathbb{E}[X_i\mid \mathcal{F}_{i-1}]\le 0$ under $H_0$.
+Then for each fixed $\lambda\in(0,1)$,
+\[
+\mathbb{E}[E_n^{(\lambda)}\mid \mathcal{F}_{n-1}] \le E_{n-1}^{(\lambda)}.
+\]
+Moreover, because $(\pi_j)$ are fixed in Genesis (non-adaptive), $(E_n)$ is also a supermartingale.
+\end{proposition}
+\begin{proof}[Proof sketch]
+$E_n^{(\lambda)}=E_{n-1}^{(\lambda)}(1+\lambda X_n)$, so
+$\mathbb{E}[E_n^{(\lambda)}\mid \mathcal{F}_{n-1}]=E_{n-1}^{(\lambda)}\mathbb{E}[1+\lambda X_n\mid \mathcal{F}_{n-1}]\le E_{n-1}^{(\lambda)}$.
+Mixtures of supermartingales with fixed nonnegative weights are supermartingales.
+\end{proof}
+
+\begin{theorem}[Optional-stopping-safe acceptance]
+\label{thm:optional}
+Accept at the first time $\tau$ such that $E_\tau\ge 1/\alpha$.
+Then $\mathbb{P}_{H_0}(\sup_n E_n\ge 1/\alpha)\le \alpha$.
+\end{theorem}
+\begin{proof}
+Ville's inequality \citep{Howard2021CS,Shafer2021Betting,Grunwald2024SafeTesting}.
+\end{proof}
+
+\subsection{Adaptive contextual sampling with logged propensities}
+This section combines logged-propensity correction with always-valid betting martingales in the off-policy sequential setting \citep{Karampatziakis2021OffPolicyCS,WaudbySmithRamdas2024Betting}.
+\begin{definition}[Conservative fixed-ratio IPS increment]
+Let $X_i$ be the context selected at trial $i$ from logged policy $\pi_i(\cdot\mid\mathcal{F}_{i-1})$ and let $\Delta_i\in[a,b]$ be the bounded progress increment.
+Assume $\tau\in[a,b]$.
+With ratio bound
+\[
+\frac{\mathcal{Q}_P(X_i)}{\pi_i(X_i\mid\mathcal{F}_{i-1})}\le c_w,
+\]
+define
+\[
+\widetilde X_i
+=
+\frac{1}{c_w}
+\frac{\mathcal{Q}_P(X_i)}{\pi_i(X_i\mid\mathcal{F}_{i-1})}
+\frac{\Delta_i-\tau}{b-a}
+\in[-1,1].
+\]
+\end{definition}
+
+\begin{theorem}[Audit-closed optional stopping under adaptive contextual sampling]
+\label{thm:adaptive-optional}
+Assume logged propensities and the progress null
+\[
+H_0^{\mathrm{prog}}:\ \mathbb{E}_{X\sim \mathcal{Q}_P}\!\left[\mathbb{E}[\Delta_i-\tau\mid X,\mathcal{F}_{i-1}]\right]\le 0.
+\]
+Then $\mathbb{E}[\widetilde X_i\mid\mathcal{F}_{i-1}]\le 0$.
+Any fixed-grid mixture e-process built from $(\widetilde X_i)$ is a nonnegative supermartingale, so optional-stopping false-acceptance control is identical to Theorem~\ref{thm:optional}.
+\end{theorem}
+\begin{proof}
+By tower rule and logged propensity correction,
+\[
+\mathbb{E}\!\left[
+\frac{\mathcal{Q}_P(X_i)}{\pi_i(X_i\mid\mathcal{F}_{i-1})}
+(\Delta_i-\tau)\,\middle|\,\mathcal{F}_{i-1}
+\right]
+=
+\mathbb{E}_{X\sim\mathcal{Q}_P}\!\left[\mathbb{E}[\Delta_i-\tau\mid X,\mathcal{F}_{i-1}]\right]\le 0.
+\]
+Scaling by positive constant preserves sign.
+\end{proof}
+
+\begin{remark}[Worst-case-ratio paralysis]
+When $c_w$ is very large, conservative normalization can make increments nearly zero and stall evidence growth.
+We therefore add a variance-adaptive rule that retains validity under a stronger context-wise null.
+\end{remark}
+
+\begin{definition}[Variance-adaptive predictable betting increment]
+Define raw IPS increment
+\[
+Y_i=
+\frac{\mathcal{Q}_P(X_i)}{\pi_i(X_i\mid\mathcal{F}_{i-1})}
+\frac{\Delta_i-\tau}{b-a}.
+\]
+Let $V_{i-1}>0$ be a predictable variance proxy computed from logged history (e.g., exponential moving average of $Y_k^2$ for $k<i$).
+For base grid $\Lambda_{\mathrm{va}}=\{\lambda_1,\dots,\lambda_m\}$ and realized weight
+\[
+w_i=\frac{\mathcal{Q}_P(X_i)}{\pi_i(X_i\mid\mathcal{F}_{i-1})},
+\]
+set
+\[
+\lambda_{i,j}=\min\!\left\{\frac{\lambda_j}{\sqrt{V_{i-1}}},\ \frac{1}{2\max(1,w_i)}\right\}.
+\]
+\end{definition}
+
+\begin{theorem}[Variance-adaptive optional stopping under contextual exploration]
+\label{thm:adaptive-var}
+Assume the context-wise null
+\[
+H_{0,\mathrm{ctx}}^{\mathrm{prog}}:\ \mathbb{E}[\Delta_i-\tau\mid X_i,\mathcal{F}_{i-1}]\le 0\quad\text{a.s.}
+\]
+and let $\mathcal{H}_i=\sigma(\mathcal{F}_{i-1},X_i)$ (context-revealed pre-outcome filtration).
+Assume additionally $\tau\in[a,b]$ and a predictable second-moment contract
+\[
+\mathbb{E}[Y_i^2\mid \mathcal{H}_i]\le V_{i-1}\quad\text{a.s.}
+\]
+for the same predictable variance proxy $V_{i-1}>0$.
+Define
+\[
+E_n^{(j)}=\prod_{i=1}^{n}\bigl(1+\lambda_{i,j}Y_i\bigr),\qquad
+E_n^{\mathrm{va}}=\sum_{j=1}^{m}\pi_j E_n^{(j)},
+\]
+with fixed nonnegative weights $\pi_j$ summing to one.
+Then $(E_n^{\mathrm{va}})$ is a nonnegative supermartingale under $H_{0,\mathrm{ctx}}^{\mathrm{prog}}$, hence optional-stopping acceptance at threshold $1/\alpha$ controls false acceptance at level $\alpha$.
+Moreover, for each grid component $j$ and $\mu_i=\mathbb{E}[Y_i\mid\mathcal{H}_i]$,
+\[
+\mathbb{E}\!\left[\log E_n^{(j)}\right]
+\ge
+\sum_{i=1}^{n}\mathbb{E}\!\left[\lambda_{i,j}\mu_i-\lambda_{i,j}^2V_{i-1}\right].
+\]
+Hence growth is governed by realized predictable variance through $\lambda_{i,j}\propto 1/\sqrt{V_{i-1}}$, rather than solely by worst-case global $c_w$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Given $\lambda_{i,j}\le 1/(2\max(1,w_i))$ and $|Y_i|\le w_i$, each factor is nonnegative.
+Under $H_{0,\mathrm{ctx}}^{\mathrm{prog}}$, $\mathbb{E}[Y_i\mid\mathcal{H}_i]\le0$, so
+\[
+\mathbb{E}[1+\lambda_{i,j}Y_i\mid\mathcal{H}_i]\le 1.
+\]
+Iterating tower property yields the supermartingale claim.
+For growth, use $\log(1+u)\ge u-u^2$ for $u\in[-1/2,\infty)$ with $u=\lambda_{i,j}Y_i$:
+\[
+\mathbb{E}[\log(1+\lambda_{i,j}Y_i)\mid\mathcal{H}_i]
+\ge
+\lambda_{i,j}\mu_i-\lambda_{i,j}^2\mathbb{E}[Y_i^2\mid\mathcal{H}_i]
+\ge
+\lambda_{i,j}\mu_i-\lambda_{i,j}^2V_{i-1}.
+\]
+Summing over $i$ yields the stated lower bound.
+The adaptive betting argument follows the predictable self-normalization pattern in modern betting-based sequential inference \citep{WaudbySmithRamdas2024Betting}.
+\end{proof}
+
+\begin{remark}[Doubly robust extension]
+Genesis may replace IPS increments by bounded doubly robust pseudo-outcomes.
+The same proofs apply if the pseudo-outcome process satisfies the corresponding conditional-mean nonpositivity contract for the chosen null.
+\end{remark}
+
+\subsection{Integrity e-process for anomaly-rate control}
+\begin{definition}[Integrity null]
+With anomaly indicators $(A_i)$ and allowed anomaly rate $q_{\max}$, test
+\[
+H_0^{\mathrm{int}}:\ \mathbb{E}[A_i\mid\mathcal{F}_{i-1}]\le q_{\max}
+\]
+using an always-valid e-process.
+\end{definition}
+
+\begin{remark}
+If $H_0^{\mathrm{int}}$ is rejected, affected devices/channels are quarantined and recertification is required before they can contribute scientific evidence.
+\end{remark}
+
+\subsection{Physical-coherence e-process}
+\begin{definition}[Physical consistency gate]
+For each physical witness $g_m\in\mathcal{G}_{\mathrm{phys}}$, use residual stream $(R_{m,i})$ and an always-valid e-process for $H_{0,m}^{\mathrm{phys}}$.
+Apply multiplicity control across $m$.
+Failure of any critical physical witness blocks adoption and triggers one of two audited branches:
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Spoofing branch:} if spoof indicators fire, immediate reject/escalate.
+\item \textbf{Aging/sentinel branch:} if spoof indicators do not fire, only a calibration-update candidate (Section 3) is allowed.
+Primary-vs-secondary sentinel checks determine whether to recalibrate sensors, maintain sentinels, or freeze calibration pending sentinel replacement.
+\end{enumerate}
+\end{definition}
+
+\subsection{Batch and stream policies; multiple alpha budgets}
+\begin{theorem}[Dependence-free batch FWER control]
+For a batch of $m$ candidates with e-values $e_j$ satisfying $\mathbb{E}[e_j]\le 1$ under their nulls, accept $j$ only if $e_j\ge m/\alpha$.
+Then $\mathbb{P}(\text{any false acceptance in the batch})\le \alpha$ without dependence assumptions.
+\end{theorem}
+
+\begin{theorem}[Stream-level alpha-spending (dependence-free)]
+Let $\{\alpha_t\}$ be fixed with $\sum_t \alpha_t\le \alpha$.
+At epoch $t$ with $m_t$ candidates, accept only if e-value $\ge m_t/\alpha_t$.
+Under the global null, $\mathbb{P}(\exists\ \text{false adoption})\le \alpha$ without dependence assumptions.
+\end{theorem}
+
+\begin{remark}[Separate data and alpha budgets]
+Genesis allocates explicit gate-wise budgets
+\[
+\alpha_{\mathrm{tot}}=
+\alpha_{\mathrm{cons}}+\alpha_{\mathrm{prog}}+\alpha_{\mathrm{garb}}+\alpha_{\mathrm{nov}}+\alpha_{\mathrm{int}}+\alpha_{\mathrm{safe}}.
+\]
+Role assignments may be disjoint or cross-fitted, but must be committed and replayable so that no gate consumes outcome-adaptively selected evidence.
+\end{remark}
+
+\section{Garbling Certificates as Log-Verifiable Claims}
+
+Blackwell ordering formalizes ``more informative measurements'' \citep{Blackwell1953}.
+We use it only when a garbling relation is \emph{certified} from data, with mode selection based on dimensionality and sample support.
+
+\subsection{Low-dimensional TV mode}
+\begin{definition}[Kernel distance under a reference $Y_1$ distribution]
+Let $K,L:Y_1\rightsquigarrow Y_0$ be kernels.
+Fix a reference distribution $\mu$ on $Y_1$ (taken from logged pilot samples).
+Define
+\[
+d_{\TV,\mu}(K,L)=\mathbb{E}_{Y_1\sim \mu}\big[\TV(K(Y_1,\cdot),L(Y_1,\cdot))\big].
+\]
+\end{definition}
+
+\begin{definition}[Approximate garbling certificate]
+Suppose pilot runs produce paired observations $(Y_1,Y_0)$ and a candidate kernel $K:Y_1\rightsquigarrow Y_0$.
+A certificate specifies (i) a tolerance $\tau_g$, (ii) a fixed binning of $Y_1$ into finitely many cells, and (iii) a holdout test that upper-bounds
+$d_{\TV,\mu}(\mathcal{L}(Y_0\mid Y_1),K)$ by $\tau_g$ using fresh paired holdout data $D_{\mathrm{G},t}$ and e-value control across bins.
+\end{definition}
+
+\begin{assumption}[Applicability envelope]
+TV-binning mode is used only when minimum per-bin occupancy and bounded effective-dimension conditions are met.
+Otherwise this mode is disallowed.
+\end{assumption}
+
+\begin{remark}[How the low-dimensional TV bound is audited]
+With the fixed binning of $Y_1$, each bin induces an unconditional two-sample comparison:
+(i) the empirical distribution of observed $Y_0$ values in the bin, and
+(ii) the distribution of $Y_0$ generated by applying the committed kernel $K$ to the observed $Y_1$ values in the same bin using a logged randomness source.
+Total variation between finite empirical distributions is computable; an e-process for bounded discrepancies (or a confidence-sequence bound) can upper-bound the true binwise TV with optional-stopping validity.
+A global $d_{\TV,\mu}$ bound is then obtained by a weighted sum across bins, with dependence-free error accounting via alpha-spending.
+\end{remark}
+
+\subsection{High-dimensional witness-IPM mode}
+\begin{definition}[Witness-class discrepancy]
+Let $\mathcal{F}_{\mathrm{pub}}$ be a public bounded witness family and let $\mathfrak{F}_{\mathrm{chal}}$ be a large challenge-family generator.
+Given challenge seed $\sigma$, define sampled challenge set $\mathcal{F}_{\mathrm{chal}}(\sigma)\subset\mathfrak{F}_{\mathrm{chal}}$.
+Set
+\[
+\mathcal{F}_\sigma=\mathcal{F}_{\mathrm{pub}}\cup \mathcal{F}_{\mathrm{chal}}(\sigma).
+\]
+All witness functions satisfy $f:Y_0\to[-1,1]$.
+Define
+\[
+d_{\mathcal{F}_\sigma}(P,Q)=\max_{f\in\mathcal{F}_\sigma}\left|\mathbb{E}_{P}[f]-\mathbb{E}_{Q}[f]\right|.
+\]
+\end{definition}
+
+\begin{definition}[High-dimensional garbling certificate]
+A high-dimensional certificate specifies $K$, public witness family commitment, challenge-family generator commitment, tolerance $\tau_{\mathcal{F}}$, and per-witness holdout e-processes testing
+\[
+H_{0,f}:\ \mathbb{E}\!\left[f(Y_0)-\mathbb{E}_{\tilde Y_0\sim K(Y_1,\cdot)}f(\tilde Y_0)\right]\le \tau_{\mathcal{F}}
+\]
+for all $f\in\mathcal{F}_\sigma$, with multiplicity correction across witnesses.
+Candidate commitment is logged \emph{before} challenge seed reveal to block witness-overfitting attacks.
+\end{definition}
+
+\begin{remark}
+In high dimension, guarantees are witness-class-relative.
+Challenge randomization prevents a fixed public witness set from being the sole optimization target.
+Conclusions remain restricted to the audited witness family.
+\end{remark}
+
+\begin{proposition}[Challenge-randomization anti-overfitting bound]
+Suppose a candidate kernel matches all public witnesses but violates at least a $\beta$ fraction of challenge-family functions by margin larger than $\tau_{\mathcal{F}}$.
+If $m$ challenge witnesses are sampled uniformly without replacement after candidate commitment, then the probability that all sampled challenge tests miss the violating region is at most $(1-\beta)^m\le e^{-\beta m}$.
+\end{proposition}
+\begin{proof}[Proof sketch]
+Each sampled challenge witness misses the violating subset with probability at most $(1-\beta)$.
+Multiply over draws and apply $1-x\le e^{-x}$.
+\end{proof}
+
+\begin{definition}[Stratified challenge generator]
+To avoid vanishing global violation mass in high dimension, Genesis may decompose challenge families by resolution/projection tiers:
+\[
+\mathfrak{F}_{\mathrm{chal}}=\bigcup_{r=0}^{R}\mathfrak{F}^{(r)},
+\]
+with fixed sampling counts $m_r$ per tier and tier-specific minimum sensitivity contracts $\beta_r$.
+\end{definition}
+
+\begin{proposition}[Tiered miss-probability bound]
+If tier $r$ witnesses miss a violating candidate with probability at most $(1-\beta_r)$ and draws are independent across sampled witnesses, then
+\[
+\Pr(\text{all challenge witnesses miss})\le \prod_{r=0}^{R}(1-\beta_r)^{m_r}
+\le
+\exp\!\left(-\sum_{r=0}^{R}\beta_r m_r\right).
+\]
+Thus practical detectability is controlled by cumulative tier sensitivity $\sum_r \beta_r m_r$, not by a single global high-dimensional $\beta$.
+\end{proposition}
+
+\begin{corollary}[Conditional DPI usage]
+If an approximate garbling certificate is accepted with sufficiently small $\tau_g$, then conclusions that rely on the Markov chain $\theta\to Y_1\to Y_0$ may be used as \emph{heuristic support}, but acceptance decisions must still be based on directly tested audit predicates (scores/e-values) rather than on untestable mutual-information statements.
+\end{corollary}
+
+\section{Multi-Agent Operation without Infrastructure Privilege}
+
+A multi-agent setting should avoid privileged shared repositories while resisting Sybil manipulation and selective witness disclosure.
+
+\begin{definition}[Permissioned witness registry]
+Genesis maintains a permissioned registry $\mathcal{R}_t$ of eligible witness identities with authenticated credentials and per-identity weight caps.
+Registry updates require certified governance transitions.
+\end{definition}
+
+\begin{definition}[Committee sampling]
+For each epoch, a witness committee $\mathcal{W}_t\subseteq\mathcal{R}_t$ is sampled by a public randomness rule (e.g., beacon-seeded VRF).
+\end{definition}
+
+\begin{definition}[Liveness quorum and replacement]
+Genesis sets quorum thresholds $(\gamma_{\min},q_{\max}^{\mathrm{miss}})$.
+If estimated honest-weight lower bound drops below $\gamma_{\min}$ or missing-disclosure rate exceeds $q_{\max}^{\mathrm{miss}}$, the committee is rotated and non-responsive witnesses are penalized/slashed.
+\end{definition}
+
+\begin{definition}[Mandatory disclosure and neutral imputation]
+Each selected witness must log attested raw data, preprocessing transcript, and replay metadata.
+For witness $w$, define
+\[
+\widetilde E_n^{(w)}=
+\begin{cases}
+E_n^{(w)}, & \text{if transcript is valid and replayable},\\
+1, & \text{otherwise}.
+\end{cases}
+\]
+Aggregate by fixed weights $\omega_w\ge0$, $\sum_w\omega_w=1$:
+\[
+\bar E_n=\sum_{w\in\mathcal{W}_t}\omega_w\widetilde E_n^{(w)}.
+\]
+\end{definition}
+
+\begin{theorem}[Sequential validity under disclosure failures]
+If each valid witness process $(E_n^{(w)})$ is a nonnegative supermartingale under the corresponding null, then $(\bar E_n)$ is also a nonnegative supermartingale, without independence assumptions.
+\end{theorem}
+\begin{proof}
+Linearity of conditional expectation preserves supermartingale validity.
+The imputed value $1$ is a constant martingale and therefore cannot inflate evidence.
+\end{proof}
+
+\begin{remark}
+Correlation across witnesses does not invalidate the aggregation theorem.
+Sybil resistance comes from permissioned membership, identity-weight caps, and public committee sampling.
+\end{remark}
+
+\begin{theorem}[Log-growth lower bound under neutral-imputation Byzantine model]
+\label{thm:byz-growth}
+Assume a fixed gate and an epoch-wise committee with total honest witness weight $\omega_n\ge\gamma>0$ at each $n$.
+Let $\widetilde E_n^{\mathrm{hon}}$ denote the honest-weighted mean contribution and assume
+\[
+\liminf_{n\to\infty}\frac{1}{n}\log \widetilde E_n^{\mathrm{hon}}\ge R>0
+\]
+almost surely.
+Assume all non-honest witnesses contribute neutral-imputed value $1$ (worst-case non-cooperative behavior under disclosure failure).
+Then
+\[
+\liminf_{n\to\infty}\frac{1}{n}\log \bar E_n
+\ge R>0.
+\]
+\end{theorem}
+\begin{proof}[Proof sketch]
+Write
+\[
+\bar E_n=(1-\omega_n)\cdot 1+\omega_n\widetilde E_n^{\mathrm{hon}},\qquad \omega_n\ge\gamma.
+\]
+Since all terms are nonnegative and $\omega_n\ge\gamma$,
+\[
+\bar E_n\ge \gamma\,\widetilde E_n^{\mathrm{hon}}.
+\]
+Taking logs and liminf gives
+\[
+\liminf_{n\to\infty}\frac{1}{n}\log\bar E_n
+\ge
+\liminf_{n\to\infty}\frac{1}{n}\log\widetilde E_n^{\mathrm{hon}}
++\lim_{n\to\infty}\frac{1}{n}\log\gamma
+\;=\;
+\liminf_{n\to\infty}\frac{1}{n}\log\widetilde E_n^{\mathrm{hon}}
+\;\ge\;R,
+\]
+since $\lim_{n\to\infty}\frac{1}{n}\log\gamma=0$ for fixed $\gamma>0$.
+This proves the claim.
+\end{proof}
+
+\begin{corollary}[Asymptotic anti-paralysis implication]
+Under Theorem~\ref{thm:byz-growth}, threshold crossing $\bar E_n\ge 1/\alpha$ occurs in finite time almost surely.
+An asymptotic epoch scale is
+\[
+n_\alpha \approx \frac{\log(1/\alpha)+\log(1/\gamma)}{R}.
+\]
+\end{corollary}
+
+\begin{remark}
+If $\gamma=0$ (no honest weight), no growth guarantee is possible.
+This is why liveness quorum and committee-replacement constraints are mandatory Genesis components.
+\end{remark}
+
+\begin{remark}[Scope of the Byzantine-growth guarantee]
+Theorem~\ref{thm:byz-growth} is intentionally scoped to the disclosure-failure threat model where non-honest witnesses are neutral-imputed.
+If adversarial witnesses can submit fully valid but systematically anti-evidence streams, additional robust-aggregation contracts are required; the present theorem does not claim coverage for that stronger adversary.
+\end{remark}
+
+\section{Genesis Architecture without Hidden Privilege}
+
+Genesis is unavoidably an explicit exogenous commitment.
+The claim is not ``no prior commitments''; it is ``no hidden privileged runtime evaluator after commitments are fixed.''
+
+\begin{definition}[Three-module Genesis]
+\begin{itemize}[leftmargin=*]
+\item $\Gen^{(0)}$ (constitutional): log integrity, admissibility meta-rules, alpha-accounting rules, governance procedure.
+\item $\Gen^{(1)}$ (domain): contexts, scores, candidate classes, cost models, power floors.
+\item $\Gen^{(\mathrm{HW})}$ (hardware trust profile): attestation formats, key rotation, calibration validity, and recertification policy.
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+Updates to $\Gen^{(1)}$ or $\Gen^{(\mathrm{HW})}$ are treated as certified candidates under $\Gen^{(0)}$.
+This keeps governance explicit and auditable without pretending initialization is content-free.
+\end{remark}
+
+\section{Observable-Only Semantics and Causality}
+
+Causal claims are treated as hypotheses about \emph{interventional contexts} that can be executed and logged.
+
+\begin{definition}[Interventions as contexts]
+A do-operation corresponds to a context in $\Obs$ whose protocol enforces an intervention (e.g., randomized assignment).
+Only causal quantities estimable from logged interventional distributions may be used in audit predicates \citep{Pearl2009Causality,Peters2017Elements}.
+\end{definition}
+
+\begin{remark}
+Graphical structure (DAGs) is an internal representation and is not directly auditable.
+Failure modes of invariance-based claims should be tracked explicitly \citep{Arjovsky2019IRM,Rosenfeld2021IRMrisks}.
+\end{remark}
+
+\section{Forward Progress and External Validity}
+
+\subsection{Forward progress in observable score}
+Error control prevents false acceptances; progress requires a positive signal.
+We state a progress guarantee in \emph{observable} terms, avoiding unobservable ``true KL'' references.
+
+\begin{definition}[Progress reference generator]
+Genesis fixes a reference generator $\mathcal{Q}_P$ over designated progress contexts.
+At epoch $t$, progress-role records are those tagged $(H,\cdot)$ by $\rho_t$.
+\end{definition}
+
+\begin{theorem}[Forward progress false-acceptance control (observable form)]
+\label{thm:progress}
+For candidate $j$ in epoch $t$, let $H^{\mathrm{prog}}_{0,t,j}:\mathbb{E}_{\mathcal{Q}_P}[\Delta_{P,t}^{(j)}]\le 0$.
+If progress acceptance requires rejection of $H^{\mathrm{prog}}_{0,t,j}$ at level $\alpha^{\mathrm{prog}}_{t,j}$ and
+\[
+\sum_t\sum_{j\in\Cand_t}\alpha^{\mathrm{prog}}_{t,j}\le \alpha_{\mathrm{prog}},
+\]
+then with probability at least $1-\alpha_{\mathrm{prog}}$, no candidate is falsely accepted as progress-positive.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Apply Ville's inequality and union bound over all $(t,j)$.
+\end{proof}
+
+\begin{remark}
+If $\mathcal{S}$ is log score on a fixed discrete partition, expected score improvement corresponds to improved cross-entropy on that partition.
+Any interpretation in terms of latent ``true'' KL is secondary and not used for audit decisions.
+\end{remark}
+
+\subsection{Distribution shift with bounded-horizon recovery}
+Long-running autonomy faces covariate shift and concept drift \citep{SugiyamaKawanabe2012,Gama2014ConceptDrift}.
+Importance weighting and nested expectation estimators can be computationally expensive and numerically fragile; Genesis should therefore treat any such correction as a costed, audited component rather than a free primitive \citep{Rainforth2018NestingMC}.
+We formalize an audit-closed response with finite-horizon exit conditions.
+
+\begin{definition}[Audit-closed drift detector]
+Genesis fixes a drift statistic $Z_t$ computable from logged data (e.g., score residuals under the currently adopted theory on a fixed calibration context set) and an always-valid e-process $(E^{\mathrm{drift}}_n)$ for the null ``no drift''.
+A drift trigger occurs at the first time $\tau$ such that $E^{\mathrm{drift}}_\tau \ge 1/\alpha_{\mathrm{drift}}$, where $\alpha_{\mathrm{drift}}$ is an alpha budget reserved for drift control.
+\end{definition}
+
+\begin{definition}[Post-trigger state transition]
+Upon a drift trigger, the protocol enters a \emph{drift mode} in which:
+(i) non-safety-critical full adoptions are suspended,
+(ii) quarantine pilots and provisional safety updates are permitted,
+and (iii) within $H_{\max}$ epochs at least one of the following must be proposed:
+\begin{enumerate}[leftmargin=*]
+\item a re-anchoring or era-transition theory candidate; or
+\item a calibration-update candidate for physical witnesses when aging branch conditions hold.
+\end{enumerate}
+All state transitions are appended to the transparency log and are therefore replayable.
+\end{definition}
+
+\begin{definition}[Exogenous-drift certification]
+For each triggered epoch, Genesis computes an external-change certificate bit
+\[
+\chi_t^{\mathrm{ext}}\in\{0,1\},
+\]
+set to $1$ only if:
+\begin{enumerate}[leftmargin=*]
+\item the drift trigger is corroborated by physical-coherence evidence from independent witness sets;
+\item spoofing indicators remain below their escalation thresholds; and
+\item minimum-separation and cooldown rules prevent repeated counting of one unresolved event.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Root continuity debt]
+Root Genesis fixes an immutable calibration generator $\mathcal{Q}_{\mathrm{root}}$.
+For a candidate $T'$, define
+\[
+D_{\mathrm{root}}(T')=\max\Bigl\{0,\,-\mathbb{E}_{\mathcal{Q}_{\mathrm{root}}}\big[\mathcal{S}(T';Y)-\mathcal{S}(T;Y)\big]-\delta_{\mathrm{root}}\Bigr\}.
+\]
+Let
+\[
+m_t^{\mathrm{ext}}=\sum_{s\le t}\chi_s^{\mathrm{ext}}
+\]
+be the cumulative number of \emph{externally certified} drift episodes.
+For constants $\lambda>0$ and $\kappa_{\min}\in(0,1]$, define
+\[
+\kappa_t=\max\{\kappa_{\min},e^{-\lambda m_t^{\mathrm{ext}}}\}.
+\]
+Define effective debt
+\[
+D_{\mathrm{root}}^{\mathrm{eff}}(T',t)=\kappa_t D_{\mathrm{root}}(T').
+\]
+Candidates must satisfy $D_{\mathrm{root}}^{\mathrm{eff}}(T',t)\le D_{\max}$.
+\end{definition}
+
+\begin{remark}
+When physical regimes change irreversibly, $\kappa_t$ decreases and progressively relaxes continuity pressure while preserving an explicit auditable continuity signal.
+Because only externally certified episodes affect $m_t^{\mathrm{ext}}$, repeated endogenous drift provocation cannot force arbitrary memory erasure.
+\end{remark}
+
+\begin{proposition}[Root-memory erosion resistance]
+Under the above definition, any adversarial sequence that triggers drift alarms without external-change certification leaves $m_t^{\mathrm{ext}}$ unchanged and therefore cannot reduce $\kappa_t$.
+Moreover, $\kappa_t\ge\kappa_{\min}$ always, so continuity debt never vanishes.
+\end{proposition}
+
+\begin{definition}[Calibration-only debt handling]
+For calibration-only candidates (no theory-content change), root continuity debt is evaluated on sentinel contexts with the current adopted theory held fixed.
+Such candidates are exempt from progress-gate root debt but must satisfy physical witness restoration and conservativity on shared contexts.
+\end{definition}
+
+\begin{definition}[Re-anchoring update (mixture form)]
+A re-anchoring proposal is a candidate update that replaces the anchor generator $\mathcal{Q}_A$ by
+\[
+\mathcal{Q}_A'=(1-\rho_t)\mathcal{Q}_A+\rho_t\,\mathcal{Q}_{\mathrm{new}},
+\]
+where $\rho_t\in(0,1]$ is chosen by a Genesis-fixed severity rule and $\mathcal{Q}_{\mathrm{new}}$ is a proposed generator for restored representativeness.
+The proposal is admissible only if it:
+\begin{enumerate}[leftmargin=*]
+\item is derived from the logged drift evidence (certificate includes the drift e-process transcript);
+\item preserves anti-bias, integrity, and data-role invariants from $\Gen^{(0)}$; and
+\item satisfies the effective root continuity debt bound.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Coherence robustness under mixture anchoring]
+\label{thm:mix-coh}
+For a fixed candidate $T'$ and any audit path $p$ in the certified coherence graph, let $\Delta_p(Y)$ be the path inconsistency random variable under anchor sample $Y$.
+Assume
+\[
+\mathbb{E}_{\mathcal{Q}_A}[\Delta_p]\le \epsilon_{\mathrm{coh}},
+\qquad
+\mathbb{E}_{\mathcal{Q}_{\mathrm{new}}}[\Delta_p]\le \epsilon_{\mathrm{coh}},
+\]
+as certified by independent gate transcripts.
+Then under mixture anchor
+\[
+\mathcal{Q}_A'=(1-\rho_t)\mathcal{Q}_A+\rho_t\mathcal{Q}_{\mathrm{new}},
+\]
+we have
+\[
+\mathbb{E}_{\mathcal{Q}_A'}[\Delta_p]\le \epsilon_{\mathrm{coh}}
+\]
+for every certified path $p$.
+\end{theorem}
+\begin{proof}
+Linearity of expectation under mixture distributions gives
+\[
+\mathbb{E}_{\mathcal{Q}_A'}[\Delta_p]
+=(1-\rho_t)\mathbb{E}_{\mathcal{Q}_A}[\Delta_p]+\rho_t\mathbb{E}_{\mathcal{Q}_{\mathrm{new}}}[\Delta_p]
+\le \epsilon_{\mathrm{coh}}.
+\]
+\end{proof}
+
+\begin{definition}[Subgraph-local drift tests]
+Let certified audit graph $G_t$ decompose into monitored subgraphs
+\[
+G_t=\bigcup_{k=1}^{K}G_t^{(k)},
+\]
+each linked to a disjoint observable interface family.
+For each $k$, Genesis defines a local drift e-process
+\[
+\bigl(E_n^{\mathrm{drift},(k)}\bigr)
+\]
+for null ``no drift in subgraph $k$'' with local alpha budget $\alpha_k$.
+\end{definition}
+
+\begin{theorem}[Audit-closed causal fault localization]
+\label{thm:fault-local}
+Suppose $\sum_{k=1}^{K}\alpha_k\le \alpha_{\mathrm{drift}}$ and closed-testing acceptance is used for local exemptions.
+If global drift triggers but for a subgraph $k$ the local no-drift hypothesis is not rejected, then $G_t^{(k)}$ may be exempted from quarantine/re-anchoring updates while affected subgraphs continue in drift mode.
+This localization preserves familywise false-localization control at level $\alpha_{\mathrm{drift}}$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Each local e-process is always-valid for its null.
+Closed testing with alpha allocation $\{\alpha_k\}$ controls familywise error under arbitrary dependence.
+We use the classical closed-testing principle in e-value form \citep{Marcus1976ClosedTesting}.
+Therefore exempting only nonrejected subgraphs does not inflate global false-localization risk beyond $\alpha_{\mathrm{drift}}$.
+\end{proof}
+
+\begin{proposition}[Finite-exit sufficient condition]
+Assume there exists an admissible transition candidate with positive progress margin on $\mathcal{Q}_{\mathrm{new}}$, bounded effective root debt, and per-epoch confirmation probability at least $p_{\mathrm{exit}}>0$.
+Then the probability of remaining in drift mode for more than $H_{\max}+L$ epochs is at most $(1-p_{\mathrm{exit}})^L$.
+\end{proposition}
+
+\section{Synthetic Self-Driving-Lab Demonstration}
+
+We include a fully reproducible synthetic benchmark for availability, false-acceptance behavior, adaptive-sampling validity, and hardware-aging recovery.
+
+\subsection{Setup}
+All numbers in this section are generated by a single script (\texttt{appendix\_reproducibility\_code.py}, Appendix C) with fixed seed 20260222.
+The manuscript, appendix code, and appendix output manifest are publicly archived at \url{https://doi.org/10.5281/zenodo.18728589}.
+The script also performs an automatic manuscript-consistency check over the Section 13 source slice in the canonical manuscript file (\texttt{Audit-Closed AI Scientist Protocol.tex}): every rounded numeric value reported here must appear in that slice, otherwise the check fails.
+Gate increments use bounded sanitized scores and mixture e-processes with grid
+$\Lambda=\{0.1,0.3,0.5,0.7,0.9\}$ and threshold $1/\alpha=100$ for $\alpha=0.01$.
+Per-run sample size is $N=220$ when applicable.
+
+Monte Carlo repetitions:
+\begin{itemize}[leftmargin=*]
+\item 1500 runs for outlier resilience.
+\item 700 runs for drift-mode bounded-horizon exit.
+\item 1200 runs for Byzantine witness liveness.
+\item 800 runs for novelty legal-spam stress.
+\item 2000 runs for adaptive contextual progress testing.
+\item 2000 runs for high-$c_w$ IPS-paralysis stress.
+\item 1500 runs for root-debt erosion attack stress.
+\item 1500 runs for subgraph fault-localization stress.
+\item 2500 runs for sentinel-hierarchy stress.
+\item 1200 runs for physical recalibration stress.
+\end{itemize}
+
+Outlier scenarios:
+\begin{itemize}[leftmargin=*]
+\item A: $p_{\mathrm{out}}=1.5\%$ per sample.
+\item B: $p_{\mathrm{out}}=5\%$ per sample.
+\item Null: no true gain, $p_{\mathrm{out}}=1.5\%$.
+\end{itemize}
+
+Policies:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Strict abort}: any out-of-range record aborts the epoch transcript.
+\item \textbf{Sanitized}: outliers map to neutral contributions and are tracked by the integrity gate.
+\end{itemize}
+
+Additional stress settings:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Byzantine witness liveness:} honest weight $\gamma=0.35$, neutral-imputed Byzantine weight $0.65$, honest log-growth target $R=0.05$, horizon 400.
+\item \textbf{Novelty legal spam:} 12 low-signal high-cost proposals and 2 honest proposals per epoch; baseline dual update vs signal-qualified eligible-cost plus slashing defense.
+\item \textbf{Adaptive contextual sampling:} target reference $\mathcal{Q}_P=(0.5,0.3,0.2)$; baseline policy $\pi=(0.5,0.3,0.2)$; adaptive policy $\pi=(0.4,0.25,0.35)$ with bounded ratio $c_w\le1.25$.
+\item \textbf{High-$c_w$ IPS stress:} reference $\mathcal{Q}_P=(0.4,0.0667,\dots)$ and exploratory policy $\pi=(0.0004,0.1111,\dots)$ yielding $c_w=1000$; compare fixed-$c_w$ normalization vs variance-adaptive predictable betting.
+\item \textbf{Root-debt erosion attack:} repeated adversarial drift alarms with rare true exogenous shifts; compare legacy decay counter vs exogenous-certified counter.
+\item \textbf{Fault localization:} two independent subgraphs with drift injected in one branch; compare global-freeze vs localized exemption policy.
+\item \textbf{Sentinel hierarchy:} compare single-sentinel calibration against primary/secondary sentinel architecture under simultaneous sensor and sentinel aging.
+\item \textbf{Physical recalibration:} benign sensor aging drift with occasional spoof attacks; compare no-recalibration vs audited recalibration branch.
+\end{itemize}
+
+\subsection{Results}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Scenario & Abort (strict) & Full (strict) & Full (sanitized) & Integrity fail \\
+\midrule
+A ($p_{\mathrm{out}}=1.5\%$) & 0.966 & 0.021 & 0.642 & 0.000 \\
+B ($p_{\mathrm{out}}=5\%$) & 1.000 & 0.000 & 0.598 & 0.000 \\
+Null (no gain) & 0.961 & 0.000 & 0.001 & 0.000 \\
+\bottomrule
+\end{tabular}
+\caption{Outlier stress test. Sanitized scoring avoids strict-abort paralysis and remains conservative in the null setting.}
+\end{table}
+
+For bounded-horizon drift recovery, exit rate from drift mode is $1.000$, stuck rate is $0.000$, median exit delay is $4$ epochs, and 90th percentile exit delay is $8$ epochs.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Stress test metric & Baseline rule & Defended rule \\
+\midrule
+Novelty legal-spam: mean final $\nu_t$ & 15.027 & 1.727 \\
+Novelty legal-spam: honest acceptance rate & 0.051 & 0.718 \\
+\bottomrule
+\end{tabular}
+\caption{Economic denial-of-service stress test for novelty dual updates. Signal-qualified eligibility plus slashing prevents dual blow-up.}
+\end{table}
+
+For Byzantine witness liveness, threshold-crossing rate is $1.000$ (within 400 epochs), median crossing time is $113$ epochs, and 90th percentile crossing time is $149$ epochs.
+This matches Theorem~\ref{thm:byz-growth}: with $\gamma=0.35$, $R=0.05$, and $\alpha=0.01$, the scale
+\[
+\frac{\log(1/\alpha)+\log(1/\gamma)}{R}
+=\frac{\log(100)+\log(1/0.35)}{0.05}\approx 113.3
+\]
+agrees with the observed median crossing epoch.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Adaptive progress metric & Baseline policy & Adaptive policy \\
+\midrule
+Alternative: threshold-crossing rate & 0.273 & 0.335 \\
+Alternative: mean $\log E$ at horizon & 2.682 & 3.406 \\
+Null: threshold-crossing rate & 0.0005 & 0.0010 \\
+Max ratio $c_w$ & 1.00 & 1.25 \\
+\bottomrule
+\end{tabular}
+\caption{Adaptive contextual sampling with logged propensities and IPS-normalized increments. Evidence growth increases under the adaptive policy while null crossing rates remain near zero.}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+High-$c_w$ stress metric & Fixed-$c_w$ IPS & Variance-adaptive IPS \\
+\midrule
+Alternative: threshold-crossing rate & 0.000 & 0.112 \\
+Alternative: mean $\log E$ at horizon & 0.005 & 2.954 \\
+Null: threshold-crossing rate & 0.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+\caption{IPS paralysis stress ($c_w=1000$). Conservative fixed normalization stalls evidence growth, while variance-adaptive predictable betting restores progress without null inflation in this benchmark.}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Root-debt attack metric & Legacy decay counter & Exogenous-certified counter \\
+\midrule
+Median drift count used in decay & 84 & 6 \\
+Median $\kappa_t$ & 0.200 & 0.549 \\
+Rate of near-forgetfulness ($\kappa_t\le 0.25$) & 1.000 & 0.001 \\
+\bottomrule
+\end{tabular}
+\caption{Root-memory erosion stress. Counting only externally certified drift events prevents adversarial decay acceleration.}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lr}
+\toprule
+Fault-localization metric & Value \\
+\midrule
+Unaffected-subgraph uptime (global freeze) & 0.738 \\
+Unaffected-subgraph uptime (localized exemption) & 1.000 \\
+False local quarantine rate & 0.0005 \\
+\bottomrule
+\end{tabular}
+\caption{Subgraph-local drift handling preserves unaffected components while maintaining strict localization error control.}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Sentinel-aging metric & Single sentinel & Hierarchical sentinels \\
+\midrule
+False sensor recalibration rate & 0.433 & 0.001 \\
+Operational freeze rate & 0.000 & 0.048 \\
+\bottomrule
+\end{tabular}
+\caption{Primary/secondary sentinel hierarchy prevents calibration collapse loops at small availability cost.}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Physical-coherence metric & No recalib branch & With recalib branch \\
+\midrule
+Legitimate-aging block rate & 0.394 & 0.038 \\
+Recovery rate after aging-induced block & 0.000 & 0.920 \\
+Spoof-attack detection rate & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\caption{Hardware-aging stress test. Audited recalibration sharply improves availability without weakening spoof detection.}
+\end{table}
+
+The new stress tests align with the added theory: high-ratio contextual exploration remains auditable with variance-adaptive betting (Theorem~\ref{thm:adaptive-var}), root-memory erosion is bounded by exogenous-only decay updates, and localized drift handling preserves unaffected subgraphs (Theorem~\ref{thm:fault-local}).
+
+\section{Implementation and Reproducibility Commitments}
+
+Each certificate must include reproducibility tier, deterministic dependency digests, seed commitments, and replay instructions.
+Tiered replay contracts are essential because physical pipelines combine deterministic software and stochastic hardware.
+
+For this manuscript, complete executable code and exact output manifest are included in Appendix C and Appendix D.
+Public archive DOI (full URL): \url{https://doi.org/10.5281/zenodo.18728589}.
+Reproduction command:
+\begin{verbatim}
+python appendix_reproducibility_code.py
+\end{verbatim}
+The script writes \texttt{appendix\_reproducibility\_results.json}, including:
+\begin{itemize}[leftmargin=*]
+\item \texttt{reproducibility\_manifest}: UTC generation time, Python/runtime metadata, script SHA-256, and core-results canonical payload SHA-256;
+\item \texttt{manuscript\_consistency\_check}: pass/fail status and missing-value list for the manuscript numeric audit.
+\end{itemize}
+All tables in Section 13 are transcribed directly from that JSON manifest.
+
+\section{Conclusion}
+
+Audit-closed scientific governance must satisfy both formal validity and physical deployability.
+The framework presented here combines typed observable semantics, non-vacuous coherence auditing with deterministic-depth controls, optional-stopping-safe inference under both fixed and adaptive contextual sampling, anti-griefing novelty accounting, attested provenance plus physical-coherence checks with hierarchical sentinels, Sybil-resistant federated evidence, and availability-preserving state transitions.
+Beyond definitions, it provides system-level guarantees: a variance-adaptive contextual e-process that avoids high-ratio IPS paralysis, a Byzantine-resilient log-growth lower bound for aggregated evidence, self-stabilized novelty dual dynamics under legal-spam pressure, sample-efficient multi-resolution discrepancy auditing, TV--Wasserstein translation for deterministic scientific abstractions, root-debt erosion resistance via exogenous certification, and fault-localized drift recovery with familywise error control.
+Under explicit assumptions, it provides replayable update decisions that remain robust to outliers, adversarial infrastructure behavior, and distribution shift.
+
+
+\appendix
+
+\section{Minimal Incorporation Certificate Schema (informative)}
+The following JSON-like skeleton illustrates the minimum fields expected in an Incorporation Certificate.
+Genesis fixes the exact canonicalization and hashing rules.
+
+\begin{verbatim}
+{
+  "genesis": {"G0": "<hash>", "G1": "<hash>", "GHW": "<hash>"},
+  "epoch": t,
+  "candidate_set": {"id": "<Cand_t>", "commitment": "<hash>"},
+  "selected_candidate": "<cid>",
+  "interface": {
+    "expansion": {"i": "<spec-hash>", "audit_graph": "<hash>"},
+    "witnesses": [
+      {"o": "...", "m": "...", "o_prime": "...", "a": "<hash>", "b": "<hash>"}
+    ],
+    "garbling_challenge_seed": "<beacon-seed>"
+  },
+  "provenance": {
+    "attestation": {
+      "device_id": "...",
+      "firmware": "<hash>",
+      "calibration": "<hash>",
+      "nonce": "<beacon-derived>",
+      "signature": "<sig>"
+    }
+  },
+  "data": {
+    "D_eval": "<digest>",
+    "role_scheduler": "<hash>",
+    "propensity_log_digest": "<digest>",
+    "D_fit": "<digest>",
+    "D_A": {"digest": "<digest>", "alpha": "alpha_cons"},
+    "D_H": {"digest": "<digest>", "alpha": "alpha_prog"},
+    "D_P": {"digest": "<digest>", "alpha": "alpha_nov"},
+    "D_G": {"digest": "<digest>", "alpha": "alpha_garb"}
+  },
+  "gates": {
+    "coherence": {
+      "eps_coh": "eps_coh",
+      "eps_det": "eps_det",
+      "L_det": "L_det",
+      "path_bounds": [...]
+    },
+    "safety": {...},
+    "integrity": {"e_process": {...}, "e_value": ...},
+    "physical_coherence": {
+      "witnesses": [...],
+      "e_values": [...],
+      "branch": "spoofing|aging|sentinel_maintenance",
+      "recalibration": {
+        "sentinel_primary_digest": "<digest>",
+        "sentinel_secondary_digest": "<digest>",
+        "theta_old": "<hash>",
+        "theta_new": "<hash>",
+        "threshold_refresh": [...]
+      }
+    },
+    "conservativity": {"e_process": {...}, "e_value": ...},
+    "progress": {
+      "reference_QP": "...",
+      "ips_ratio_cap": "c_w",
+      "mode": "fixed_ips|variance_adaptive",
+      "variance_trace_digest": "<digest>",
+      "e_process": {...},
+      "e_value": ...
+    },
+    "drift": {
+      "global_e_process": {...},
+      "local_subgraph_e_values": [...],
+      "external_cert_bit": "0|1",
+      "m_ext": "...",
+      "kappa_t": "..."
+    },
+    "novelty": {
+      "dual_nu": "...",
+      "eligible_cost_trace": [...],
+      "slashing_events": [...],
+      "e_process": {...},
+      "e_value": ...
+    },
+    "garbling": {
+      "mode": "tv|witness",
+      "challenge_set": "...",
+      "e_process": {...}
+    }
+  },
+  "decision": "ADOPT|PROVISIONAL|QUARANTINE|REJECT",
+  "replay": {"tier": "...", "deps": "<digest>", "seed": "..."}
+}
+\end{verbatim}
+
+\section{Determinism tiers (informative)}
+Genesis should define explicit replay tiers, from ``bitwise deterministic'' to ``statistical replay'' with confidence bounds.
+The tier is part of the certificate because reproducibility cost is a first-class constraint.
+
+\section{Complete Reproducibility Code (normative)}
+The following file is included verbatim so readers can reproduce every empirical number in Section 13 exactly:
+\begin{verbatim}
+appendix_reproducibility_code.py
+\end{verbatim}
+\verbatiminput{appendix_reproducibility_code.py}
+
+\section{Reproducibility Output Manifest (normative)}
+Running Appendix C code emits the following machine-readable output:
+\begin{verbatim}
+appendix_reproducibility_results.json
+\end{verbatim}
+\verbatiminput{appendix_reproducibility_results.json}
+
+
+\begin{thebibliography}{99}
+
+\bibitem[Arjovsky et~al.(2019)]{Arjovsky2019IRM}
+M.~Arjovsky, L.~Bottou, I.~Gulrajani, and D.~Lopez-Paz.
+\newblock Invariant risk minimization.
+\newblock arXiv:1907.02893, 2019.
+\newblock \url{https://arxiv.org/abs/1907.02893}.
+
+\bibitem[Blackwell(1953)]{Blackwell1953}
+D.~Blackwell.
+\newblock Equivalent comparisons of experiments.
+\newblock {\em The Annals of Mathematical Statistics}, 24(2):265--272, 1953.
+
+\bibitem[Brunton et~al.(2016)]{Brunton2016SINDy}
+S.~L. Brunton, J.~L. Proctor, and J.~N. Kutz.
+\newblock Discovering governing equations from data by sparse identification of nonlinear dynamical systems.
+\newblock {\em PNAS}, 113(15):3932--3937, 2016. doi:10.1073/pnas.1517384113.
+
+\bibitem[Campbell(1976)]{Campbell1976}
+D.~T. Campbell.
+\newblock Assessing the impact of planned social change.
+\newblock Dartmouth College, Public Affairs Center (Occasional Paper Series), 1976.
+
+\bibitem[Chaloner and Verdinelli(1995)]{ChalonerVerdinelli1995}
+K.~Chaloner and I.~Verdinelli.
+\newblock Bayesian experimental design: a review.
+\newblock {\em Statistical Science}, 10(3):273--304, 1995.
+
+\bibitem[Chuat et~al.(2015)]{Chuat2015Gossip}
+L.~Chuat, P.~Szalachowski, A.~Perrig, B.~Laurie, and E.~Messeri.
+\newblock Efficient gossip protocols for verifying the consistency of certificate logs.
+\newblock In {\em Proceedings of the IEEE Conference on Communications and Network Security (CNS)}, 2015.
+\newblock doi:10.1109/CNS.2015.7346853.
+\newblock Unpaywalled version: \url{https://netsec.ethz.ch/publications/papers/gossip2015.pdf}. 
+
+\bibitem[Cuomo et~al.(2022)]{Cuomo2022PINNReview}
+S.~Cuomo et~al.
+\newblock Scientific machine learning through physics--informed neural networks: where we are and what's next.
+\newblock {\em Journal of Scientific Computing}, 92:88, 2022.
+
+\bibitem[Foster et~al.(2019)]{Foster2019vOED}
+A.~Foster, D.~Jankowiak, E.~Bingham, P.~Horsfall, Y.~W. Teh, T.~Rainforth, and N.~Goodman.
+\newblock Variational Bayesian optimal experimental design.
+\newblock In {\em NeurIPS}, 2019.
+\newblock \url{https://papers.nips.cc/paper_files/paper/2019/file/d55cbf210f175f4a37916eafe6c04f0d-Paper.pdf}.
+
+\bibitem[Gama et~al.(2014)]{Gama2014ConceptDrift}
+J.~Gama, I.~Zliobait{\.e}, A.~Bifet, M.~Pechenizkiy, and A.~Bouchachia.
+\newblock A survey on concept drift adaptation.
+\newblock {\em ACM Computing Surveys}, 46(4):44, 2014. doi:10.1145/2523813.
+
+\bibitem[Goguen and Burstall(1992)]{GoguenBurstall1992}
+J.~A. Goguen and R.~M. Burstall.
+\newblock Institutions: abstract model theory for specification and programming.
+\newblock {\em JACM}, 39(1):95--146, 1992.
+
+\bibitem[Goodhart(1975)]{Goodhart1975}
+C.~A.~E. Goodhart.
+\newblock Problems of monetary management: the {UK} experience.
+\newblock Reserve Bank of Australia, Papers in Monetary Economics, Vol.~I, 1975.
+
+\bibitem[Gr{\"u}nwald et~al.(2024)]{Grunwald2024SafeTesting}
+P.~Gr{\"u}nwald, R.~de~Heide, and W.~Koolen.
+\newblock Safe testing.
+\newblock {\em JRSS-B}, 86(5):1091--1128, 2024. doi:10.1093/jrsssb/qkae011.
+
+\bibitem[Howard et~al.(2021)]{Howard2021CS}
+S.~R. Howard, A.~Ramdas, J.~McAuliffe, and J.~Sekhon.
+\newblock Time-uniform, nonparametric, nonasymptotic confidence sequences.
+\newblock {\em Annals of Statistics}, 49(2):1055--1080, 2021. doi:10.1214/20-AOS1991.
+
+\bibitem[Ivanova et~al.(2021)]{Ivanova2021iDAD}
+D.~R. Ivanova, A.~Foster, S.~Kleinegesse, M.~U. Gutmann, and T.~Rainforth.
+\newblock Implicit deep adaptive design: policy-based experimental design without likelihoods.
+\newblock In {\em NeurIPS}, 2021.
+\newblock \url{https://papers.neurips.cc/paper_files/paper/2021/hash/d811406316b669ad3d370d78b51b1d2e-Abstract.html}.
+
+\bibitem[Johari et~al.(2017)]{Johari2017Peeking}
+R.~Johari, P.~Koomen, L.~Pekelis, and D.~Walsh.
+\newblock Peeking at {A/B} tests: why it matters, and what to do about it.
+\newblock In {\em KDD}, 2017. doi:10.1145/3097983.3097992.
+
+\bibitem[Johari et~al.(2022)]{Johari2022AlwaysValid}
+R.~Johari, L.~Pekelis, and D.~Walsh.
+\newblock Always valid inference: continuous monitoring of {A/B} tests.
+\newblock {\em Operations Research}, 70(3):1807--1828, 2022. doi:10.1287/opre.2021.2135.
+
+\bibitem[Karniadakis et~al.(2021)]{Karniadakis2021PIML}
+G.~E. Karniadakis et~al.
+\newblock Physics-informed machine learning.
+\newblock {\em Nature Reviews Physics}, 3(6):422--440, 2021. doi:10.1038/s42254-021-00314-5.
+
+\bibitem[Karampatziakis et~al.(2021)]{Karampatziakis2021OffPolicyCS}
+Y.~Karampatziakis, A.~Basu, M.~Mineiro, and A.~Dubey.
+\newblock Off-policy confidence sequences.
+\newblock arXiv:2102.09095, 2021.
+\newblock \url{https://arxiv.org/abs/2102.09095}.
+
+\bibitem[King et~al.(2009)]{King2009Automation}
+R.~D. King et~al.
+\newblock The automation of science.
+\newblock {\em Science}, 324(5923):85--89, 2009. doi:10.1126/science.1165620.
+
+\bibitem[Kelsey et~al.(2019)]{NISTIR8213draft}
+J.~Kelsey, L.~T.~A.~N. Brand{\~a}o, R.~Peralta, and H.~Booth.
+\newblock A reference for randomness beacons: format and protocol version 2 (Draft {NISTIR} 8213).
+\newblock NIST, 2019. doi:10.6028/NIST.IR.8213-draft.
+\newblock \url{https://nvlpubs.nist.gov/nistpubs/ir/2019/NIST.IR.8213-draft.pdf}.
+
+\bibitem[NIST(2026)]{NISTBeaconProject}
+National Institute of Standards and Technology.
+\newblock Interoperable randomness beacons project page (status notes indicate the reference document is still a draft).
+\newblock Accessed 2026-02-22.
+\newblock \url{https://csrc.nist.gov/projects/interoperable-randomness-beacons}.
+
+\bibitem[Lindley(1956)]{Lindley1956}
+D.~V. Lindley.
+\newblock On a measure of the information provided by an experiment.
+\newblock {\em Annals of Mathematical Statistics}, 27(4):986--1005, 1956. doi:10.1214/aoms/1177728069.
+
+\bibitem[Lu et~al.(2024)]{Lu2024AIScientist}
+C.~Lu et~al.
+\newblock The AI Scientist: Towards fully automated open-ended scientific discovery.
+\newblock arXiv:2408.06292, 2024.
+\newblock \url{https://arxiv.org/abs/2408.06292}.
+
+\bibitem[Marcus et~al.(1976)]{Marcus1976ClosedTesting}
+R.~Marcus, E.~Peritz, and K.~R. Gabriel.
+\newblock On closed testing procedures with special reference to ordered analysis of variance.
+\newblock {\em Biometrika}, 63(3):655--660, 1976. doi:10.1093/biomet/63.3.655.
+
+\bibitem[Oxford et~al.(2020)]{Oxford2020CTGossip}
+M.~Oxford, A.~Malacaria, and C.~Hankin.
+\newblock Quantitative verification of certificate transparency gossip protocols.
+\newblock In {\em SecureComm}, 2020.
+\newblock \url{https://www.prismmodelchecker.org/papers/spc20.pdf}.
+
+\bibitem[Pearl(2009)]{Pearl2009Causality}
+J.~Pearl.
+\newblock {\em Causality: Models, Reasoning, and Inference}.
+\newblock Cambridge University Press, 2nd edition, 2009.
+
+\bibitem[Peng(2011)]{Peng2011}
+R.~D. Peng.
+\newblock Reproducible research in computational science.
+\newblock {\em Science}, 334(6060):1226--1227, 2011. doi:10.1126/science.1213847.
+
+\bibitem[Peters et~al.(2017)]{Peters2017Elements}
+J.~Peters, D.~Janzing, and B.~Sch{\"o}lkopf.
+\newblock {\em Elements of Causal Inference: Foundations and Learning Algorithms}.
+\newblock MIT Press, 2017.
+
+\bibitem[Popper(1959)]{Popper1959}
+K.~Popper.
+\newblock {\em The Logic of Scientific Discovery}.
+\newblock Basic Books, 1959.
+
+
+\bibitem[Rainforth et~al.(2018)]{Rainforth2018NestingMC}
+T.~Rainforth, R.~Cornish, H.~Yang, A.~Warrington, and F.~Wood.
+\newblock On nesting Monte Carlo estimators.
+\newblock In {\em ICML}, 2018.
+\newblock \url{https://proceedings.mlr.press/v80/rainforth18a/rainforth18a.pdf}.
+
+\bibitem[Quine(1951)]{Quine1951}
+W.~V.~O. Quine.
+\newblock Two dogmas of empiricism.
+\newblock {\em The Philosophical Review}, 60(1):20--43, 1951. doi:10.2307/2181906.
+
+\bibitem[Raissi et~al.(2019)]{Raissi2019PINN}
+M.~Raissi, P.~Perdikaris, and G.~E. Karniadakis.
+\newblock Physics-informed neural networks.
+\newblock {\em Journal of Computational Physics}, 378:686--707, 2019. doi:10.1016/j.jcp.2018.10.045.
+
+\bibitem[RFC6962(2013)]{RFC6962}
+B.~Laurie, A.~Langley, and E.~Kasper.
+\newblock RFC 6962: Certificate transparency.
+\newblock RFC Editor, 2013.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc6962.html}.
+
+\bibitem[Rosenfeld et~al.(2021)]{Rosenfeld2021IRMrisks}
+E.~Rosenfeld, P.~K. Ravikumar, and A.~Rakhlin.
+\newblock The risks of invariant risk minimization.
+\newblock In {\em ICLR}, 2021.
+\newblock \url{https://openreview.net/pdf?id=BbNIbVPJ-42}.
+
+\bibitem[Sandve et~al.(2013)]{Sandve2013}
+G.~K. Sandve et~al.
+\newblock Ten simple rules for reproducible computational research.
+\newblock {\em PLOS Computational Biology}, 9(10):e1003285, 2013. doi:10.1371/journal.pcbi.1003285.
+
+\bibitem[Schmidt and Lipson(2009)]{SchmidtLipson2009}
+M.~Schmidt and H.~Lipson.
+\newblock Distilling free-form natural laws from experimental data.
+\newblock {\em Science}, 324(5923):81--85, 2009. doi:10.1126/science.1165893.
+
+\bibitem[Shafer(2021)]{Shafer2021Betting}
+G.~Shafer.
+\newblock Testing by betting: a strategy for statistical and scientific communication.
+\newblock {\em Journal of the Royal Statistical Society Series A}, 184(2):407--431, 2021. doi:10.1111/rssa.12647.
+
+\bibitem[Sparkes et~al.(2010)]{Sparkes2010RobotScientists}
+A.~C. Sparkes et~al.
+\newblock Towards robot scientists for autonomous scientific discovery.
+\newblock {\em Automated Experimentation}, 2(1):1, 2010. doi:10.1186/1759-4499-2-1.
+
+\bibitem[Sugiyama and Kawanabe(2012)]{SugiyamaKawanabe2012}
+M.~Sugiyama and M.~Kawanabe.
+\newblock {\em Machine Learning in Non-Stationary Environments: Introduction to Covariate Shift Adaptation}.
+\newblock MIT Press, 2012.
+
+\bibitem[Tom et~al.(2024)]{Tom2024SDLchemrev}
+G.~Tom et~al.
+\newblock Self-driving laboratories for chemistry and materials science.
+\newblock {\em Chemical Reviews}, 124(16):9633--9732, 2024. doi:10.1021/acs.chemrev.4c00055.
+
+\bibitem[Tobias and Wahab(2025)]{TobiasWahab2025SDLReview}
+A.~V. Tobias and A.~Wahab.
+\newblock Autonomous self-driving laboratories: a review.
+\newblock {\em Royal Society Open Science}, 12(7):250646, 2025. doi:10.1098/rsos.250646.
+
+\bibitem[Udrescu and Tegmark(2020)]{UdrescuTegmark2020}
+S.-M. Udrescu and M.~Tegmark.
+\newblock AI Feynman.
+\newblock {\em Science Advances}, 6(16):eaay2631, 2020. doi:10.1126/sciadv.aay2631.
+
+\bibitem[Villani(2009)]{Villani2009OT}
+C.~Villani.
+\newblock {\em Optimal Transport: Old and New}.
+\newblock Springer, 2009. doi:10.1007/978-3-540-71050-9.
+
+\bibitem[Waudby-Smith and Ramdas(2024)]{WaudbySmithRamdas2024Betting}
+I.~Waudby-Smith and A.~Ramdas.
+\newblock Estimating means of bounded random variables by betting.
+\newblock {\em Journal of the Royal Statistical Society Series B}, 86(5), 2024.
+\newblock doi:10.1093/jrsssb/qkad063.
+
+\bibitem[Yamada et~al.(2025)]{Yamada2025AIScientistV2}
+H.~Yamada et~al.
+\newblock The AI Scientist-v2: Workshop-level automated scientific discovery via agentic tree search.
+\newblock arXiv:2504.08066, 2025.
+\newblock \url{https://arxiv.org/abs/2504.08066}.
+
+\end{thebibliography}
+
+\end{document}
